@@ -219,25 +219,28 @@ public class Pong extends JFrame {
 		// create a circle
 		Circle cirShape = new Circle(0.5);
 		GameObject circle = new GameObject();
-		circle.addFixture(cirShape);
+		BodyFixture circ = circle.addFixture(cirShape);
 		circle.setMass(MassType.NORMAL);
-		circle.setGravityScale (0.0);
+		circle.setGravityScale (1.0);
 		circle.translate(4.0, 2.0);
+		circ.setRestitution (1.0);
 		// test adding some force
 		circle.applyForce(new Vector2(-100.0, 0.0));
 		// set some linear damping to simulate rolling friction
 //		circle.setLinearDamping(0.95);
-//		circle.setLinearVelocity(1.0, 0.0);
+		//circle.setLinearVelocity(-1.0, 0.0);
+		System.out.println (circ.getRestitution());
 		this.world.addBody(circle);
-		
+
 		// try a rectangle
 		Rectangle rectShape = new Rectangle(1.0, 1.0);
 		GameObject rectangle = new GameObject();
 		rectangle.addFixture(rectShape);
-		rectangle.setMass(MassType.NORMAL);
+		rectangle.setMass(MassType.FIXED_LINEAR_VELOCITY);
+		rectangle.setGravityScale (0.0);
 		rectangle.translate(0.0, 2.0);
-		rectangle.getLinearVelocity().set(-5.0, 0.0);
-		//this.world.addBody(rectangle);
+		//rectangle.getLinearVelocity().set(-5.0, 0.0);
+		this.world.addBody(rectangle);
 	}
 	
 	/**
