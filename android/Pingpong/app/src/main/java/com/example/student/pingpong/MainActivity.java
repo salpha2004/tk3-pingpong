@@ -17,13 +17,14 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText nicknameText;
     private Button nicknameButton;
-    private Context self = getApplicationContext();
+    private Context self;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        self = getApplicationContext();
         nicknameText = (EditText) findViewById(R.id.nicknameText);
 
         nicknameButton = (Button) findViewById(R.id.nicknameButton);
