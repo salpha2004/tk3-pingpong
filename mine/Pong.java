@@ -194,13 +194,13 @@ public class Pong extends JFrame {
 		// create all your bodies/joints
 		
 		// create the floor
-		Rectangle floorRect = new Rectangle(15.0, 1.0);
+		Rectangle floorRect = new Rectangle(3.0, 0.3);
 		GameObject floor = new GameObject();
-		floor.addFixture(floorRect);
-//		floor.addFixture(new BodyFixture(floorRect));
-		floor.setMass(MassType.FIXED_LINEAR_VELOCITY);
+//		floor.addFixture(floorRect);
+		floor.addFixture(new BodyFixture(floorRect));
+		floor.setMass(MassType.INFINITE);
 		// move the floor down a bit
-		floor.translate(0.0, -4.0);
+		floor.translate(2.0, 0.0);
 		this.world.addBody(floor);
 		
 		// create a triangle object
@@ -236,7 +236,7 @@ public class Pong extends JFrame {
 		Rectangle rectShape = new Rectangle(1.0, 1.0);
 		GameObject rectangle = new GameObject();
 		rectangle.addFixture(rectShape);
-		rectangle.setMass(MassType.FIXED_LINEAR_VELOCITY);
+		rectangle.setMass(MassType.NORMAL);
 		rectangle.setGravityScale (0.0);
 		rectangle.translate(0.0, 2.0);
 		//rectangle.getLinearVelocity().set(-5.0, 0.0);
