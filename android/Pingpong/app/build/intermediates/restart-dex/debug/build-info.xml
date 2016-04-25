@@ -1,68 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <instant-run
     abi="armeabi-v7a,armeabi"
-    api-level="23"
-    density="xxhdpi"
+    api-level="19"
+    density="xhdpi"
     format="7"
-    timestamp="34097648844228"
-    verifier="COMPATIBLE" >
+    timestamp="36959609957539" >
 
     <task
         name="javac"
-        duration="70" />
+        duration="1053" />
     <task
         name="instant-run-dex"
-        duration="344" />
+        duration="0" />
     <task
         name="instant-run-transform"
-        duration="20" />
+        duration="729" />
     <task
         name="verifier"
-        duration="0" />
+        duration="60" />
 
     <artifact
-        location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/reload-dex/debug/classes.dex"
-        type="RELOAD_DEX" />
+        location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/outputs/apk/app-debug.apk"
+        type="MAIN" />
 
-    <build timestamp="33908798974660" >
+    <build timestamp="36959609957539" >
         <artifact
             location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/outputs/apk/app-debug.apk"
             type="MAIN" />
-    </build>
-    <build
-        timestamp="34008442910772"
-        verifier="COMPATIBLE" >
-        <artifact
-            location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/builds/debug/34008442910772/classes.dex"
-            type="RELOAD_DEX" />
-    </build>
-    <build
-        timestamp="34025764350461"
-        verifier="COMPATIBLE" >
-        <artifact
-            location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/builds/debug/34025764350461/classes.dex"
-            type="RELOAD_DEX" />
-    </build>
-    <build
-        timestamp="34047432593201"
-        verifier="COMPATIBLE" >
-        <artifact
-            location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/builds/debug/34047432593201/classes.dex"
-            type="RELOAD_DEX" />
-    </build>
-    <build
-        timestamp="34083664063170"
-        verifier="COMPATIBLE" >
-        <artifact
-            location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/builds/debug/34083664063170/classes.dex"
-            type="RELOAD_DEX" />
-    </build>
-    <build
-        timestamp="34097648844228"
-        verifier="COMPATIBLE" >
-        <artifact
-            location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/reload-dex/debug/classes.dex"
-            type="RELOAD_DEX" />
     </build>
 
 </instant-run>
