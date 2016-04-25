@@ -1,0 +1,2 @@
+CHANGED,/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/transforms/instantRun/debug/folders/1/5/main/com/example/student/pingpong/Background.class
+CHANGED,/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/transforms/instantRun/debug/folders/1/5/main/com/example/student/pingpong/GameActivity.class
