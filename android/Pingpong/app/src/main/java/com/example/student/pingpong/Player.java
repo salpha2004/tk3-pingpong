@@ -24,7 +24,6 @@ public class Player extends View {
 
     protected void onDraw(Canvas canvas){
         mDrawable.draw(canvas);
-        System.out.println("player drawn");
     }
 
     public void update(){

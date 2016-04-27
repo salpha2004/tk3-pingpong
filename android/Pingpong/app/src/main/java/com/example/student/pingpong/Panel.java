@@ -1,15 +1,21 @@
 package com.example.student.pingpong;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
-public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback{
+public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback, SensorEventListener{
 
     SurfaceView surfaceView;
     SurfaceHolder surfaceHolder;
@@ -17,6 +23,10 @@ public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback{
     Background bg;
     Player player;
     GameThread gThread;
+
+    private SensorManager sensorManager;
+    private Sensor lAccel;
+    float[] moveHistory = new float[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +38,11 @@ public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback{
         surfaceHolder.addCallback(this);
 
         gThread = new GameThread(surfaceHolder, this);
+
+        // for linear acceleration
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lAccel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, lAccel, SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -82,6 +97,44 @@ public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback{
             player.draw(canvas);
         }
         //super.draw(canvas);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event){
+        float xChange, yChange;
+        if(moveHistory.length <= 0 ){
+            xChange = event.values[0];
+            yChange = event.values[1];
+        }else {
+            xChange = moveHistory[0] - event.values[0];
+            yChange = moveHistory[1] - event.values[1];
+        }
+        // reset history
+        moveHistory[0] = event.values[0];
+        moveHistory[1] = event.values[1];
+
+        // infer direction and move player
+        // anything less than 2 is just noise
+        if(xChange > 2){
+            System.out.println(event.values);
+            showToaster("MOVEmENT" + event.values);
+        }
+
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy){
+        // TOneverDO write code here
+    }
+
+    public void showToaster(String msg){
+        Context context = getApplicationContext();
+        CharSequence text = msg;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
 }

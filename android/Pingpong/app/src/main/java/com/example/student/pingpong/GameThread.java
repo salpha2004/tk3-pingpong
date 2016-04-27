@@ -1,6 +1,9 @@
 package com.example.student.pingpong;
 
+import android.content.Context;
 import android.graphics.Canvas;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.view.SurfaceHolder;
 
 /**
@@ -16,6 +19,8 @@ public class GameThread extends Thread {
         super();
         surfaceHolder = holder;
         this.panel = panel;
+
+
     }
 
     public void run(){
@@ -27,8 +32,6 @@ public class GameThread extends Thread {
                 synchronized (surfaceHolder){
                     this.panel.update();
                     this.panel.draw(canvas);
-                    System.out.println("DRAWING PANEL");
-                    System.out.println(canvas);
                 }
 
             } catch (RuntimeException e) {
