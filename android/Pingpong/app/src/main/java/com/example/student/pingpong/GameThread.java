@@ -36,7 +36,14 @@ public class GameThread extends Thread {
                 System.err.println(e);
                 return;
             }finally {
-                surfaceHolder.unlockCanvasAndPost(canvas);
+                if(canvas != null){
+                    // once done with drawing with the canvas
+                    try {
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
