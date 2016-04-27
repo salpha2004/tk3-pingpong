@@ -120,6 +120,10 @@
         "source": "/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.3.0/res/layout/support_simple_spinner_dropdown_item.xml"
     },
     {
+        "merged": "/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/res/merged/debug/layout/activity_panel.xml",
+        "source": "/home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/res/layout/activity_panel.xml"
+    },
+    {
         "merged": "/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/res/merged/debug/layout/abc_list_menu_item_layout.xml",
         "source": "/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.3.0/res/layout/abc_list_menu_item_layout.xml"
     },

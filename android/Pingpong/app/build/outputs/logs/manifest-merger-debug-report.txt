@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:2:1-21:12
+ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:2:1-24:12
 	xmlns:android
 		ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:2:11-69
 	package
@@ -14,7 +14,7 @@ ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/And
 		INJECTED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml
 		INJECTED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml
 application
-ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:5:5-19:19
+ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:5:5-22:19
 MERGED from [com.android.support:appcompat-v7:23.3.0] /home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.3.0/AndroidManifest.xml:25:5-20
 MERGED from [com.android.support:support-vector-drawable:23.3.0] /home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.3.0/AndroidManifest.xml:7:5-20
 MERGED from [com.android.support:support-v4:23.3.0] /home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.3.0/AndroidManifest.xml:22:5-20
@@ -47,11 +47,15 @@ ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/And
 	android:name
 		ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:15:27-74
 activity#com.example.student.pingpong.GameActivity
-ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:18:9-97
+ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:18:9-20:53
 	android:screenOrientation
-		ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:18:48-85
+		ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:20:13-50
 	android:name
-		ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:18:19-47
+		ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:19:13-41
+activity#com.example.student.pingpong.Panel
+ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:21:9-52
+	android:name
+		ADDED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml:21:19-40
 uses-sdk
 INJECTED from /home/student/Projects/tk3-pingpong/android/Pingpong/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [com.android.support:appcompat-v7:23.3.0] /home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.3.0/AndroidManifest.xml:21:5-23:78

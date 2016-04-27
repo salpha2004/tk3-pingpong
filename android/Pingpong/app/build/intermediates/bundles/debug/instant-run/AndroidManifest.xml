@@ -25,6 +25,7 @@
         <activity
             android:name="com.example.student.pingpong.GameActivity"
             android:screenOrientation="landscape" />
+        <activity android:name="com.example.student.pingpong.Panel" />
     </application>
 
 </manifest>

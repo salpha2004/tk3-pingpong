@@ -20,6 +20,7 @@ public class Background{
     private Bitmap bGround;
     private int x, y;
 
+
     //public Background(Bitmap res){
     //    bGround = res;
     //}
@@ -37,6 +38,9 @@ public class Background{
     public void draw(Canvas canvas){
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
+        // background color
+        canvas.drawARGB(0, 0, 0, 0);
+        //canvas.drawColor(Color.BLUE);
         canvas.drawBitmap(bGround, x, y, null);
         System.out.println("background drawn");
     }
