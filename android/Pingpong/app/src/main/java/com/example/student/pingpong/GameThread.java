@@ -24,10 +24,19 @@ public class GameThread extends Thread {
 
             try {
                 canvas = surfaceHolder.lockCanvas();
-            }catch (Exception e){
-                e.printStackTrace();
-            }finally {
+                synchronized (surfaceHolder){
+                    this.panel.update();
+                    this.panel.draw(canvas);
+                    System.out.println("DRAWING PANEL");
+                    System.out.println(canvas);
+                }
 
+            } catch (RuntimeException e) {
+                // check for exceptions
+                System.err.println(e);
+                return;
+            }finally {
+                surfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
     }

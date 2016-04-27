@@ -36,12 +36,16 @@ public class Background{
     }
 
     public void draw(Canvas canvas){
-        Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-        // background color
-        canvas.drawARGB(0, 0, 0, 0);
-        //canvas.drawColor(Color.BLUE);
-        canvas.drawBitmap(bGround, x, y, null);
-        System.out.println("background drawn");
+        if(canvas != null){
+            Paint paint = new Paint();
+            paint.setColor(Color.WHITE);
+            // background color
+            System.out.println(canvas);
+            canvas.drawARGB(0, 0, 0, 0);
+            //canvas.drawColor(Color.BLUE);
+            canvas.drawBitmap(bGround, x, y, null);
+            System.out.println("background drawn");
+        }
+
     }
 }

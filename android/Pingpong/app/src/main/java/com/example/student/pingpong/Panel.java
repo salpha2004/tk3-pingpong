@@ -31,17 +31,18 @@ public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback{
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        // Now that the size is known, set up the camera parameters and begin
-        // the preview.
-        bg.draw(canvas);
+        /*bg.draw(canvas);
         player.draw(canvas);
-        System.out.println("SURAFACE CHaNGED");
+        System.out.println("SURAFACE CHaNGED");*/
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
         bg = new Background(400, 300, BitmapFactory.decodeResource(getResources(), R.drawable.pitou));
         player = new Player(this, 330, 1270, 300, 50);
         this.surfaceHolder = holder;
+
+        gThread.setRunning(true);
+        gThread.start();
 
         /*Canvas c = holder.lockCanvas();
         canvas = c;
@@ -53,25 +54,34 @@ public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback{
             bg.draw(c);
         }*/
         //holder.unlockCanvasAndPost(c);
-        try {
-            canvas = this.surfaceHolder.lockCanvas();
-            synchronized (this.surfaceHolder){
-                bg.draw(canvas);
-                player.draw(canvas);
-                System.out.println("DRAWING PANEL");
-            }
 
-        } catch (RuntimeException e) {
-            // check for exceptions
-            System.err.println(e);
-            return;
-        }finally {
-            this.surfaceHolder.unlockCanvasAndPost(canvas);
-        }
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
+        boolean retry = true;
+        while(retry){
+            try{
+                gThread.setRunning(false);
+                gThread.join();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
 
+            retry = false;
+        }
+    }
+
+    public void update(){
+        player.update();
+        bg.update();
+    }
+
+    public void draw(Canvas canvas){
+        if(canvas != null){
+            bg.draw(canvas);
+            player.draw(canvas);
+        }
+        //super.draw(canvas);
     }
 
 }
