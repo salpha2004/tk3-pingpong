@@ -54,4 +54,14 @@ public class GameThread extends Thread {
     public void setRunning(Boolean bool){
         running = bool;
     }
+
+    public boolean isRunning(){
+        return running;
+    }
+
+    public void redrawPlayer(Player player){
+        if(canvas != null){
+            player.draw(canvas);
+        }
+    }
 }

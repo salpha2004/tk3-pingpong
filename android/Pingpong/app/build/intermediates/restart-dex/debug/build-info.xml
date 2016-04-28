@@ -4,37 +4,29 @@
     api-level="23"
     density="xxhdpi"
     format="7"
-    timestamp="29159388524277"
-    verifier="COMPATIBLE" >
+    timestamp="40702890577959" >
 
     <task
         name="javac"
-        duration="227" />
+        duration="211" />
     <task
         name="instant-run-dex"
-        duration="647" />
+        duration="0" />
     <task
         name="instant-run-transform"
-        duration="61" />
+        duration="129" />
     <task
         name="verifier"
-        duration="1" />
+        duration="4" />
 
     <artifact
-        location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/reload-dex/debug/classes.dex"
-        type="RELOAD_DEX" />
+        location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/outputs/apk/app-debug.apk"
+        type="MAIN" />
 
-    <build timestamp="29098235593344" >
+    <build timestamp="40702890577959" >
         <artifact
             location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/outputs/apk/app-debug.apk"
             type="MAIN" />
-    </build>
-    <build
-        timestamp="29159388524277"
-        verifier="COMPATIBLE" >
-        <artifact
-            location="/home/student/Projects/tk3-pingpong/android/Pingpong/app/build/intermediates/reload-dex/debug/classes.dex"
-            type="RELOAD_DEX" />
     </build>
 
 </instant-run>

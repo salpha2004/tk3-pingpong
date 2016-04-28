@@ -25,9 +25,12 @@ public class GameActivity extends AppCompatActivity {
         // set to full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+
         //setContentView(new Player(this, 90, 170, 300, 50));
         //setContentView(new GamePanel(this));
         Intent intent = new Intent(this, Panel.class);
         startActivity(intent);
+
+
     }
 }

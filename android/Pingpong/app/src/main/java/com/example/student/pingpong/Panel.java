@@ -19,7 +19,7 @@ public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback,
 
     SurfaceView surfaceView;
     SurfaceHolder surfaceHolder;
-    Canvas canvas;
+    //Canvas canvas;
     Background bg;
     Player player;
     GameThread gThread;
@@ -27,6 +27,8 @@ public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback,
     private SensorManager sensorManager;
     private Sensor lAccel;
     float[] moveHistory = new float[2];
+
+    private Position pPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,8 @@ public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback,
 
     public void surfaceCreated(SurfaceHolder holder) {
         bg = new Background(400, 300, BitmapFactory.decodeResource(getResources(), R.drawable.pitou));
-        player = new Player(this, 330, 1270, 300, 50);
+        pPos = new Position(330, 1270);
+        player = new Player(this, Math.round(pPos.getXPos()), Math.round(pPos.getYPos()), 300, 50);
         this.surfaceHolder = holder;
 
         gThread.setRunning(true);
@@ -117,7 +120,12 @@ public class Panel extends AppCompatActivity  implements SurfaceHolder.Callback,
         // anything less than 2 is just noise
         if(xChange > 2){
             System.out.println(event.values);
-            showToaster("MOVEmENT" + event.values);
+            //showToaster("MOVEmENT" + event.values);
+            pPos = pPos.newPos(event.values[0], event.values[1]);
+            if(gThread.isRunning()){
+                player.rePosition(pPos);
+                gThread.redrawPlayer(player);
+            }
         }
 
 

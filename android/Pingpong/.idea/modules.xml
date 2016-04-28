@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Pingpong.iml" filepath="$PROJECT_DIR$/Pingpong.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/umundo/umundo.iml" filepath="$PROJECT_DIR$/umundo/umundo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/umundoNative/umundoNative.iml" filepath="$PROJECT_DIR$/umundoNative/umundoNative.iml" />
     </modules>
   </component>
 </project>
