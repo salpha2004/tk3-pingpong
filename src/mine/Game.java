@@ -106,75 +106,109 @@ public class Game extends JFrame implements KeyListener {
         Timer timer = new Timer(true);
         
         Mundo m;
+        int _numPlayers, _readyPlayers;
+    
+    public class Recv extends Receiver {
+        public void receive(Message msg) {
+            
+            if (msg.getMeta().containsKey("start")) {
+                init ();
+            }
+            if (m.getId() == 0 && msg.getMeta().containsKey("ready")) {
+                _readyPlayers++;
+                if (_readyPlayers == _numPlayers) {
+                    try {
+                        Message start = new Message();
+                        start.putMeta("start", "");
+                        Thread.sleep(1000);
+                        m.getPub().send(start);
+                        init();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+            if (msg.getMeta().containsKey("pos")) {
+                //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
+                int id = Integer.parseInt(msg.getMeta("id"));
+                float f = Float.parseFloat(msg.getMeta("pos"));
+            }
+            if (msg.getMeta().containsKey("ballX")) {
+                //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
+                float x = Float.parseFloat(msg.getMeta("ballX"));
+                float y = Float.parseFloat(msg.getMeta("ballY"));
+            }
+        }
+    }
         
         void waitForOthers (int num) {
             Message msg = new Message();
             int joined = 1;
-            System.out.println(m.getId());
             try {
                 Thread.sleep (1000);
             }
             catch (InterruptedException ex) {}
+            System.out.println(m.getId());
+            
             /* game's coordinator has id=0. */
             if (m.getId() == 0) {
-                // while not all players have joined...
-                while (joined < num) {
-                    if (msg.getMeta().containsKey("ready"))
-                        joined++;
-                }
-                // after jumping out of the loop, all players have joined.
-                msg.putMeta("start", "");
+                m.getSub().setReceiver(new Recv());
             }
-            else {
+            else { // TODO: should be called after "start" button press by each player.
+                m.getSub().setReceiver(new Recv());
                 msg.putMeta("ready", "");
-                // while "start" cmd not received from the coordinator...
-                while (msg.getMeta().containsKey("start") == false) {
-                    Thread.yield();
-                }
+                m.getPub().send (msg);
             }
         }
         
 	public Game (int numberOfPlayers) {
             super("TK3 - PingPong");
-            
+            _readyPlayers = numberOfPlayers;
             // init uMundo
             m = Mundo.getInstance();
+
+
             
             waitForOthers (numberOfPlayers);
             
-            // setup the JFrame
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            // create the size of the window
-            Dimension size = new Dimension(800, 600);
-
-            // create a canvas to paint to 
-            this.canvas = new Canvas();
-            this.canvas.setPreferredSize(size);
-            this.canvas.setMinimumSize(size);
-            this.canvas.setMaximumSize(size);
-
-            // add the canvas to the JFrame
-            this.add(this.canvas);
-
-            // make the JFrame not resizable
-            // (this way I dont have to worry about resize events)
-            this.setResizable(false);
-
-            this.addKeyListener (this);
-            this.setFocusable(true);
-
-            // size everything
-            this.pack();
-
-            // make sure we are not stopped
-            this.stopped = false;
-
-            // setup the world
-            this.initializeWorld();
-            // must be called after the world is initialized.
-            restart();
 	}
+
+    void init () {
+        // setup the JFrame
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // create the size of the window
+        Dimension size = new Dimension(800, 600);
+
+        // create a canvas to paint to 
+        this.canvas = new Canvas();
+        this.canvas.setPreferredSize(size);
+        this.canvas.setMinimumSize(size);
+        this.canvas.setMaximumSize(size);
+
+        // add the canvas to the JFrame
+        this.add(this.canvas);
+
+        // make the JFrame not resizable
+        // (this way I dont have to worry about resize events)
+        this.setResizable(false);
+
+        this.addKeyListener (this);
+        this.setFocusable(true);
+
+        // size everything
+        this.pack();
+
+        // make sure we are not stopped
+        this.stopped = false;
+
+        // setup the world
+        this.initializeWorld();
+        // must be called after the world is initialized.
+        restart();
+
+    }
         
 	/*
 	 * Creates game objects and adds them to the world.
@@ -369,7 +403,7 @@ public class Game extends JFrame implements KeyListener {
 	}
 
 	public static void main(String[] args) {
-            String libPath = System.getProperty("user.dir") + "/libumundoNativeJava.so";
+            String libPath = System.getProperty("user.dir") + "/../libumundoNativeJava64.so";
             System.load(libPath);
 		// set the look and feel to the system look and feel
 		try {
@@ -410,3 +444,4 @@ public class Game extends JFrame implements KeyListener {
 		game.start();
 	}
 }
+
