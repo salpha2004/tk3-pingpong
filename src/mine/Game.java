@@ -51,6 +51,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Vector2;
+import org.umundo.core.Message;
 
 class BallStarter extends TimerTask {
     Ball ball;
@@ -97,18 +98,50 @@ public class Game extends JFrame implements KeyListener {
 	protected long last;
         
         
-        Bar bar1, bar2;
+        Bar bar;
         HorWall bar1Wall, bar2Wall;
-        int bar1Lifes = 3, bar2Lifes = 3;
+        int lifes = 3;
         Ball ball;
         
         Timer timer = new Timer(true);
         
-        Mundo m = Mundo.getInstance();
-
-	public Game () {
+        Mundo m;
+        
+        void waitForOthers (int num) {
+            Message msg = new Message();
+            int joined = 1;
+            System.out.println(m.getId());
+            try {
+                Thread.sleep (1000);
+            }
+            catch (InterruptedException ex) {}
+            /* game's coordinator has id=0. */
+            if (m.getId() == 0) {
+                // while not all players have joined...
+                while (joined < num) {
+                    if (msg.getMeta().containsKey("ready"))
+                        joined++;
+                }
+                // after jumping out of the loop, all players have joined.
+                msg.putMeta("start", "");
+            }
+            else {
+                msg.putMeta("ready", "");
+                // while "start" cmd not received from the coordinator...
+                while (msg.getMeta().containsKey("start") == false) {
+                    Thread.yield();
+                }
+            }
+        }
+        
+	public Game (int numberOfPlayers) {
             super("TK3 - PingPong");
-
+            
+            // init uMundo
+            m = Mundo.getInstance();
+            
+            waitForOthers (numberOfPlayers);
+            
             // setup the JFrame
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -156,15 +189,10 @@ public class Game extends JFrame implements KeyListener {
 
 
         // create the bars
-        bar1 = new Bar(Color.BLUE, KeyEvent.VK_LEFT,
+        bar = new Bar(Color.BLUE, KeyEvent.VK_LEFT,
                 KeyEvent.VK_RIGHT);
-        bar1.translate(0.0, 7.55);
-        this.world.addBody(bar1);
-
-        bar2 = new Bar(Color.GREEN, KeyEvent.VK_A,
-                KeyEvent.VK_D);
-        bar2.translate(0.0, -5.53);
-        this.world.addBody(bar2);
+        bar.translate(0.0, 7.55);
+        this.world.addBody(bar);
 
         // create the walls
         VerWall leftWall = new VerWall ();
@@ -185,8 +213,7 @@ public class Game extends JFrame implements KeyListener {
     }
 
         public void keyPressed(KeyEvent e) {
-            bar1.keyPressed(e.getKeyCode());
-            bar2.keyPressed(e.getKeyCode());
+            bar.keyPressed(e.getKeyCode());
         }
 
         public void keyReleased(KeyEvent e) {
@@ -244,13 +271,8 @@ public class Game extends JFrame implements KeyListener {
         
         void checkBallCollision () {
             if (ball.isInContact(bar1Wall)) {
-                bar1Lifes--;
+                lifes--;
                 System.out.println("bar1");
-                restart ();
-            }
-            if (ball.isInContact(bar2Wall)) {
-                bar2Lifes--;
-                System.out.println("bar2");
                 restart ();
             }
         }
@@ -347,6 +369,8 @@ public class Game extends JFrame implements KeyListener {
 	}
 
 	public static void main(String[] args) {
+            String libPath = System.getProperty("user.dir") + "/libumundoNativeJava.so";
+            System.load(libPath);
 		// set the look and feel to the system look and feel
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -359,10 +383,12 @@ public class Game extends JFrame implements KeyListener {
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		
-		// create the example JFrame
-		Game game = new Game();
                 
+                // TODO: get number of players via GUI
+                
+                
+		// create the example JFrame
+		Game game = new Game(2);
                 JFrame gameBoard = new JFrame("Game Board");
                 JPanel board = new JPanel(new GridLayout(1, 3));
                 JLabel time = new JLabel("3");
