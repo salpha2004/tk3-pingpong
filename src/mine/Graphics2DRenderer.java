@@ -104,8 +104,9 @@ public final class Graphics2DRenderer {
 		g.setColor(color);
 		g.fill(c);
 		// draw the outline
-		g.setColor(getOutlineColor(color));
-		g.draw(c);
+		// commented out by SAeeD:
+                //g.setColor(getOutlineColor(color));
+		//g.draw(c);
 		
 		// draw a line so that rotation is visible
 		Line2D.Double l = new Line2D.Double(

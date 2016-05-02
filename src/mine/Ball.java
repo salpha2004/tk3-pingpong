@@ -18,7 +18,8 @@ public class Ball extends GameObject {
     public Ball () {
         circ = new Circle (BALL_RAD);
         BodyFixture c = new BodyFixture(circ);
-        c.setRestitution(1.03);
+        c.setRestitution(1.02);
+        c.setFriction(0.0);
         this.addFixture(c);
         this.setMass (MassType.NORMAL);
         this.setGravityScale(0.0);

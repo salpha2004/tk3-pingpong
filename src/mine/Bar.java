@@ -28,24 +28,21 @@ public class Bar extends GameObject {
             rect = new Rectangle (WIDTH, HEIGHT);
             this.addFixture(new BodyFixture(rect));
             // allow linear velocity to change the position via arrow keys.
-            this.setMass(MassType.INFINITE);
+            this.setMass(MassType.FIXED_ANGULAR_VELOCITY);
             this.setGravityScale(0.0); // not affected by gravity.
             // lose linear velocity over the time.
             this.setLinearDamping(SLOW_DOWN);
         }
         
         public void keyPressed (int key) {
-            if (key == leftKey) {
-                //this.applyForce(new Vector2(-SPEED_UP, 0.0));
-                this.shift(new Vector2(-0.5, 0.0));
+            if (key == leftKey) {               
+                this.applyForce(new Vector2(-SPEED_UP, 0.0));
+                //this.shift(new Vector2(-0.5, 0.0));
             }
             if (key == rightKey) {
                 this.applyForce(new Vector2(SPEED_UP, 0.0));
-                this.shift(new Vector2(0.5, 0.0));
+                //this.shift(new Vector2(0.5, 0.0));
             }
-        }
-        
-        public void keyReleased (int key) {
         }
         
 	/**

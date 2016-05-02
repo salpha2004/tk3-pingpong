@@ -29,22 +29,53 @@
 
 package mine;
 
+import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Vector2;
+
+class BallStarter extends TimerTask {
+    Ball ball;
+    final double MAX_FORCE = 90.0;
+    final double MIN_FORCE = 30.0;
+
+    double genForce () {
+        double force = Math.random() * 100.0;
+        while (force > MAX_FORCE || force < MIN_FORCE)
+            force = Math.random() * 100.0;
+        if (Math.random() < 0.5)
+            force *= -1;
+        return force;
+    }
+    
+    public BallStarter (Ball b) {
+        ball = b;
+    }
+    
+    @Override
+    public void run () {
+        //ball.setLinearVelocity(genForce(), genForce());
+        ball.applyForce(new Vector2(genForce(), genForce()));
+    }
+}
 
 public class Game extends JFrame implements KeyListener {
 	/** The scale 45 pixels per meter */
@@ -65,85 +96,93 @@ public class Game extends JFrame implements KeyListener {
 	/** The time stamp for the last iteration */
 	protected long last;
         
+        
         Bar bar1, bar2;
+        HorWall bar1Wall, bar2Wall;
+        int bar1Lifes = 3, bar2Lifes = 3;
         Ball ball;
+        
+        Timer timer = new Timer(true);
+        
+        Mundo m = Mundo.getInstance();
 
 	public Game () {
-		super("TK3 - PingPong");
-		// setup the JFrame
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		// create the size of the window
-		Dimension size = new Dimension(800, 600);
-		
-		// create a canvas to paint to 
-		this.canvas = new Canvas();
-		this.canvas.setPreferredSize(size);
-		this.canvas.setMinimumSize(size);
-		this.canvas.setMaximumSize(size);
-		
-		// add the canvas to the JFrame
-		this.add(this.canvas);
-		
-		// make the JFrame not resizable
-		// (this way I dont have to worry about resize events)
-		this.setResizable(false);
+            super("TK3 - PingPong");
 
-   		this.addKeyListener (this);
-		this.setFocusable(true);
+            // setup the JFrame
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		// size everything
-		this.pack();
-		
-		// make sure we are not stopped
-		this.stopped = false;
-		
-		// setup the world
-		this.initializeWorld();
+            // create the size of the window
+            Dimension size = new Dimension(800, 600);
+
+            // create a canvas to paint to 
+            this.canvas = new Canvas();
+            this.canvas.setPreferredSize(size);
+            this.canvas.setMinimumSize(size);
+            this.canvas.setMaximumSize(size);
+
+            // add the canvas to the JFrame
+            this.add(this.canvas);
+
+            // make the JFrame not resizable
+            // (this way I dont have to worry about resize events)
+            this.setResizable(false);
+
+            this.addKeyListener (this);
+            this.setFocusable(true);
+
+            // size everything
+            this.pack();
+
+            // make sure we are not stopped
+            this.stopped = false;
+
+            // setup the world
+            this.initializeWorld();
+            // must be called after the world is initialized.
+            restart();
 	}
-
+        
 	/*
 	 * Creates game objects and adds them to the world.
 	 */
-	void initializeWorld() {
-		// create the world
-		this.world = new World();
-		
-                // create the ball
-                ball = new Ball ();
-                ball.translate(0.0, 0.0);
-                this.world.addBody(ball);
-                
-                ball.applyForce(new Vector2(60.0, -370.0));
-                
-		// create the bars
-		bar1 = new Bar(Color.BLUE, KeyEvent.VK_LEFT,
-                        KeyEvent.VK_RIGHT);
-                bar1.translate(0.0, 7.32);
-		this.world.addBody(bar1);
-                
-                bar2 = new Bar(Color.GREEN, KeyEvent.VK_A,
-                        KeyEvent.VK_D);
-                bar2.translate(0.0, -5.3);
-                this.world.addBody(bar2);
-                
-                // create the walls
-                VerWall leftWall = new VerWall ();
-                leftWall.translate (-8.9, 0.0);
-                this.world.addBody(leftWall);
+    void initializeWorld() {
+        // create the world
+        this.world = new World();
 
-                VerWall rightWall = new VerWall ();
-                rightWall.translate (8.87, 0.0);
-                this.world.addBody(rightWall);
+        // create the ball
+        ball = new Ball ();
+        this.world.addBody(ball);
 
-                HorWall upWall = new HorWall ();
-                upWall.translate (0.0, 7.75);
-                this.world.addBody(upWall);
 
-                HorWall dnWall = new HorWall ();
-                dnWall.translate (0.0, -5.73);
-                this.world.addBody(dnWall);
-}
+        // create the bars
+        bar1 = new Bar(Color.BLUE, KeyEvent.VK_LEFT,
+                KeyEvent.VK_RIGHT);
+        bar1.translate(0.0, 7.55);
+        this.world.addBody(bar1);
+
+        bar2 = new Bar(Color.GREEN, KeyEvent.VK_A,
+                KeyEvent.VK_D);
+        bar2.translate(0.0, -5.53);
+        this.world.addBody(bar2);
+
+        // create the walls
+        VerWall leftWall = new VerWall ();
+        leftWall.translate (-8.9, 0.0);
+        this.world.addBody(leftWall);
+
+        VerWall rightWall = new VerWall ();
+        rightWall.translate (8.87, 0.0);
+        this.world.addBody(rightWall);
+
+        bar1Wall = new HorWall ();
+        bar1Wall.translate (0.0, 7.75);
+        this.world.addBody(bar1Wall);
+
+        bar2Wall = new HorWall ();
+        bar2Wall.translate (0.0, -5.73);
+        this.world.addBody(bar2Wall);
+    }
 
         public void keyPressed(KeyEvent e) {
             bar1.keyPressed(e.getKeyCode());
@@ -176,13 +215,9 @@ public class Game extends JFrame implements KeyListener {
                             // perform an infinite loop stopped
                             // render as fast as possible
                             while (!isStopped()) {
-                                gameLoop();
-                                try {
-                                    Thread.sleep (15);
-                                }
-                                catch (InterruptedException ex) {
-                                    
-                                }
+                                checkBallCollision();
+                                renderLoop();
+                                gameLoop ();
                                 // you could add a Thread.yield(); or
                                 // Thread.sleep(long) here to give the
                                 // CPU some breathing room
@@ -195,53 +230,84 @@ public class Game extends JFrame implements KeyListener {
 		// start the game loop
 		thread.start();
 	}
-	
-	/**
+	        
+        
+        void restart () {
+            ball.setLinearVelocity(0.0, 0.0);
+            ball.clearAccumulatedForce();
+            ball.clearAccumulatedTorque();
+            ball.clearForce();
+            ball.clearTorque();
+            ball.translateToOrigin();
+            timer.schedule(new BallStarter(ball), 3000);
+        }
+        
+        void checkBallCollision () {
+            if (ball.isInContact(bar1Wall)) {
+                bar1Lifes--;
+                System.out.println("bar1");
+                restart ();
+            }
+            if (ball.isInContact(bar2Wall)) {
+                bar2Lifes--;
+                System.out.println("bar2");
+                restart ();
+            }
+        }
+        
+	/* run the game and poll for bars' and the ball's positions.
+         * update other players. */
+        void gameLoop () {
+            
+        }
+        
+        /**
 	 * The method calling the necessary methods to update
 	 * the game, graphics, and poll for input.
 	 */
-	protected void gameLoop() {
-		// get the graphics object to render to
-		Graphics2D g = (Graphics2D)this.canvas.getBufferStrategy().getDrawGraphics();
-		
-		// before we render everything im going to flip the y axis and move the
-		// origin to the center (instead of it being in the top left corner)
-		AffineTransform yFlip = AffineTransform.getScaleInstance(1, -1);
-		AffineTransform move = AffineTransform.getTranslateInstance(400, -300);
-		g.transform(yFlip);
-		g.transform(move);
-		
-		// now (0, 0) is in the center of the screen with the positive x axis
-		// pointing right and the positive y axis pointing up
-		
-		// render anything about the Example (will render the World objects)
-		this.render(g);
-		
-		// dispose of the graphics object
-		g.dispose();
-		
-		// blit/flip the buffer
-		BufferStrategy strategy = this.canvas.getBufferStrategy();
-		if (!strategy.contentsLost()) {
-			strategy.show();
-		}
-		
-		// Sync the display on some systems.
-        // (on Linux, this fixes event queue problems)
-        Toolkit.getDefaultToolkit().sync();
+	protected void renderLoop() {
+            
+            // get the graphics object to render to
+            Graphics2D g = (Graphics2D)this.canvas.getBufferStrategy().getDrawGraphics();
+
+            // before we render everything im going to flip the y axis and move the
+            // origin to the center (instead of it being in the top left corner)
+            AffineTransform yFlip = AffineTransform.getScaleInstance(1, -1);
+            AffineTransform move = AffineTransform.getTranslateInstance(400, -300);
+            g.transform(yFlip);
+            g.transform(move);
+
+            // now (0, 0) is in the center of the screen with the positive x axis
+            // pointing right and the positive y axis pointing up
+
+            // render anything about the Example (will render the World objects)
+            this.render(g);
+
+            // dispose of the graphics object
+            g.dispose();
+
+            // blit/flip the buffer
+            BufferStrategy strategy = this.canvas.getBufferStrategy();
+            if (!strategy.contentsLost()) {
+                    strategy.show();
+            }
+
+            // Sync the display on some systems.
+            // (on Linux, this fixes event queue problems)
+            Toolkit.getDefaultToolkit().sync();
         
-        // update the World
-        
-        // get the current time
-        long time = System.nanoTime();
-        // get the elapsed time from the last iteration
-        long diff = time - this.last;
-        // set the last time
-        this.last = time;
-    	// convert from nanoseconds to seconds
-    	double elapsedTime = diff / NANO_TO_BASE;
-        // update the world with the elapsed time
-        this.world.update(elapsedTime);
+            // update the World
+
+            // get the current time
+            long time = System.nanoTime();
+            // get the elapsed time from the last iteration
+            long diff = time - this.last;
+            // set the last time
+            this.last = time;
+            // convert from nanoseconds to seconds
+            double elapsedTime = diff / NANO_TO_BASE;
+            // update the world with the elapsed time
+            this.world.update(elapsedTime);
 	}
 
 	/**
@@ -296,6 +362,20 @@ public class Game extends JFrame implements KeyListener {
 		
 		// create the example JFrame
 		Game game = new Game();
+                
+                JFrame gameBoard = new JFrame("Game Board");
+                JPanel board = new JPanel(new GridLayout(1, 3));
+                JLabel time = new JLabel("3");
+                JLabel p1Life = new JLabel ("1");
+                
+                JLabel p2Life = new JLabel ("2");
+                board.add(p1Life);
+                board.add(time);
+                board.add(p2Life);
+                gameBoard.getContentPane().add (board, BorderLayout.CENTER);
+                gameBoard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                gameBoard.pack();
+                gameBoard.setVisible(true);
 		
 		// show it
 		game.setVisible(true);
