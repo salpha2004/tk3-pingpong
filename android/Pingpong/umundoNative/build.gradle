@@ -1,0 +1,3 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('umundoNative.jar'))
+artifacts.add("default", file('umundo.jar'))

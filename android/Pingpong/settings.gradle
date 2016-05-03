@@ -1,0 +1,2 @@
+include ':app' //, ':umundo', ':umundoNative'
+//project(':umundo').projectDir = new File('umundo')
