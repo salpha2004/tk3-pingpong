@@ -51,7 +51,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Vector2;
+
 import org.umundo.core.Message;
+import org.umundo.core.Receiver;
 
 class BallStarter extends TimerTask {
     Ball ball;
@@ -99,29 +101,32 @@ public class Game extends JFrame implements KeyListener {
         
         
         Bar bar;
-        HorWall bar1Wall, bar2Wall;
+        Wall myWall;
         int lifes = 3;
         Ball ball;
         
         Timer timer = new Timer(true);
         
-        Mundo m;
-        int _numPlayers, _readyPlayers;
+        Mundo mundo;
+        // TODO: readyPlayers are those in the black screen (pressed the button),
+        // numPlayers are those in the main screen (before pressing the button)
+        int numPlayers = 2, readyPlayers = 0;
     
     public class Recv extends Receiver {
         public void receive(Message msg) {
             
             if (msg.getMeta().containsKey("start")) {
                 init ();
+                System.out.println ("start");
             }
-            if (m.getId() == 0 && msg.getMeta().containsKey("ready")) {
-                _readyPlayers++;
-                if (_readyPlayers == _numPlayers) {
+            if (mundo.getId() == 0 && msg.getMeta().containsKey("ready")) {
+                readyPlayers++;
+                if (readyPlayers == numPlayers) {
                     try {
                         Message start = new Message();
                         start.putMeta("start", "");
+                        mundo.getPub().send(start);
                         Thread.sleep(1000);
-                        m.getPub().send(start);
                         init();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -145,32 +150,35 @@ public class Game extends JFrame implements KeyListener {
         void waitForOthers (int num) {
             Message msg = new Message();
             int joined = 1;
+            System.out.println("mundo id: " + mundo.getId());
             try {
-                Thread.sleep (1000);
+                Thread.sleep (5000);
             }
             catch (InterruptedException ex) {}
-            System.out.println(m.getId());
             
             /* game's coordinator has id=0. */
-            if (m.getId() == 0) {
-                m.getSub().setReceiver(new Recv());
+            if (mundo.getId() == 0) {
+                mundo.getSub().setReceiver(new Recv());
             }
             else { // TODO: should be called after "start" button press by each player.
-                m.getSub().setReceiver(new Recv());
+                mundo.getSub().setReceiver(new Recv());
                 msg.putMeta("ready", "");
-                m.getPub().send (msg);
+                mundo.getPub().send (msg);
             }
         }
         
 	public Game (int numberOfPlayers) {
             super("TK3 - PingPong");
-            _readyPlayers = numberOfPlayers;
             // init uMundo
-            m = Mundo.getInstance();
-
-
             
-            waitForOthers (numberOfPlayers);
+            // comment in:
+            //mundo = Mundo.getInstance();
+            
+            // comment in:
+            //waitForOthers (numberOfPlayers);
+
+            // comment out (remove):
+            init ();
             
 	}
 
@@ -207,12 +215,90 @@ public class Game extends JFrame implements KeyListener {
         this.initializeWorld();
         // must be called after the world is initialized.
         restart();
+        // show it
+        this.setVisible(true);
+		
+        // start it
+        this.start();
 
     }
         
-	/*
-	 * Creates game objects and adds them to the world.
-	 */
+    void createBar () {
+        // create the bar
+        switch (mundo.getId()) {
+            case 0:
+                bar = new Bar(Bar.BAR_HORIZONTAL, Color.BLUE,
+                        KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT);
+                bar.translate(0.0, -5.55);
+                break;
+            case 1:
+                bar = new Bar(Bar.BAR_HORIZONTAL, Color.RED,
+                        KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT);
+                bar.translate(0.0, 7.55);
+                break;
+            case 2:
+                bar = new Bar(Bar.BAR_VERTICAL, Color.GREEN,
+                        KeyEvent.VK_DOWN, KeyEvent.VK_UP);
+                bar.translate(-8.76, 0.0);
+                break;
+            case 3:
+                bar = new Bar(Bar.BAR_VERTICAL, Color.YELLOW,
+                        KeyEvent.VK_DOWN, KeyEvent.VK_UP);
+                bar.translate(8.76, 0.0);
+                break;
+            default:
+                bar = new Bar(Bar.BAR_HORIZONTAL, Color.BLACK,
+                        KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT);
+                bar.translate(0.0, 0.0);
+                break;
+        }
+        this.world.addBody(bar);
+    }
+
+    void createWalls () {
+        Wall leftWall = new Wall (Wall.WALL_VERTICAL);
+        leftWall.translate (-8.96, 0.0);
+        this.world.addBody(leftWall);
+
+        Wall rightWall = new Wall (Wall.WALL_VERTICAL);
+        rightWall.translate (8.93, 0.0);
+        this.world.addBody(rightWall);
+
+        Wall topWall = new Wall (Wall.WALL_HORIZONTAL);
+        topWall.translate (0.0, 7.75);
+        this.world.addBody(topWall);
+
+        Wall bottomWall = new Wall (Wall.WALL_HORIZONTAL);
+        bottomWall.translate (0.0, -5.73);
+        this.world.addBody(bottomWall);
+
+        // comment out (remove):
+        myWall = leftWall;
+        
+        // comment in:
+/*
+        switch (mundo.getId()) {
+            case 0:
+                myWall = bottomWall;
+                break;
+            case 1:
+                myWall = topWall;
+                break;
+            case 2:
+                myWall = leftWall;
+                break;
+            case 3:
+                myWall = rightWall;
+                break;
+            default:
+                break;
+        }
+*/
+    }
+
+    /*
+     * Creates game objects and adds them to the world.
+     */
     void initializeWorld() {
         // create the world
         this.world = new World();
@@ -221,29 +307,15 @@ public class Game extends JFrame implements KeyListener {
         ball = new Ball ();
         this.world.addBody(ball);
 
-
-        // create the bars
-        bar = new Bar(Color.BLUE, KeyEvent.VK_LEFT,
-                KeyEvent.VK_RIGHT);
-        bar.translate(0.0, 7.55);
+        // comment in:
+//        createBar ();
+        bar = new Bar(Bar.BAR_VERTICAL, Color.BLUE, KeyEvent.VK_DOWN,
+                KeyEvent.VK_UP);
+        bar.translate(-8.76, 0.0);
         this.world.addBody(bar);
 
         // create the walls
-        VerWall leftWall = new VerWall ();
-        leftWall.translate (-8.9, 0.0);
-        this.world.addBody(leftWall);
-
-        VerWall rightWall = new VerWall ();
-        rightWall.translate (8.87, 0.0);
-        this.world.addBody(rightWall);
-
-        bar1Wall = new HorWall ();
-        bar1Wall.translate (0.0, 7.75);
-        this.world.addBody(bar1Wall);
-
-        bar2Wall = new HorWall ();
-        bar2Wall.translate (0.0, -5.73);
-        this.world.addBody(bar2Wall);
+        createWalls();
     }
 
         public void keyPressed(KeyEvent e) {
@@ -304,9 +376,9 @@ public class Game extends JFrame implements KeyListener {
         }
         
         void checkBallCollision () {
-            if (ball.isInContact(bar1Wall)) {
+            if (ball.isInContact(myWall)) {
                 lifes--;
-                System.out.println("bar1");
+                System.out.println("collision with my wall");
                 restart ();
             }
         }
@@ -403,7 +475,7 @@ public class Game extends JFrame implements KeyListener {
 	}
 
 	public static void main(String[] args) {
-            String libPath = System.getProperty("user.dir") + "/../libumundoNativeJava64.so";
+            String libPath = System.getProperty("user.dir") + "/libumundoNativeJava.so";
             System.load(libPath);
 		// set the look and feel to the system look and feel
 		try {
@@ -418,16 +490,15 @@ public class Game extends JFrame implements KeyListener {
 			e.printStackTrace();
 		}
                 
-                // TODO: get number of players via GUI
-                
-                
 		// create the example JFrame
 		Game game = new Game(2);
+
+                // comment in:
+                /*
                 JFrame gameBoard = new JFrame("Game Board");
                 JPanel board = new JPanel(new GridLayout(1, 3));
                 JLabel time = new JLabel("3");
                 JLabel p1Life = new JLabel ("1");
-                
                 JLabel p2Life = new JLabel ("2");
                 board.add(p1Life);
                 board.add(time);
@@ -436,12 +507,7 @@ public class Game extends JFrame implements KeyListener {
                 gameBoard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 gameBoard.pack();
                 gameBoard.setVisible(true);
-		
-		// show it
-		game.setVisible(true);
-		
-		// start it
-		game.start();
+*/		
 	}
 }
 

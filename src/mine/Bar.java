@@ -15,17 +15,25 @@ public class Bar extends GameObject {
         final double HEIGHT = 0.3;
         final double SPEED_UP = 300.0;
         final double SLOW_DOWN = 5.0;
-	
+
+        public final static int BAR_HORIZONTAL = 0;
+	public final static int BAR_VERTICAL = 1;
+        
         Color color;
         Rectangle rect;
-        int leftKey, rightKey;
+        int type;
+        int leftDownKey, rightUpKey;
         
         
-        public Bar (Color c, int left, int right) {
-            leftKey = left;
-            rightKey = right;
+        public Bar (int type, Color c, int leftDown, int rightUp) {
+            leftDownKey = leftDown;
+            rightUpKey = rightUp;
             color = c;
-            rect = new Rectangle (WIDTH, HEIGHT);
+            this.type = type;
+            if (type == BAR_HORIZONTAL)
+                rect = new Rectangle (WIDTH, HEIGHT);
+            else if (type == BAR_VERTICAL)
+                rect = new Rectangle (HEIGHT, WIDTH);
             this.addFixture(new BodyFixture(rect));
             // allow linear velocity to change the position via arrow keys.
             this.setMass(MassType.FIXED_ANGULAR_VELOCITY);
@@ -35,13 +43,25 @@ public class Bar extends GameObject {
         }
         
         public void keyPressed (int key) {
-            if (key == leftKey) {               
-                this.applyForce(new Vector2(-SPEED_UP, 0.0));
-                //this.shift(new Vector2(-0.5, 0.0));
+            if (type == BAR_HORIZONTAL) {
+                if (key == leftDownKey) {               
+                    this.applyForce(new Vector2(-SPEED_UP, 0.0));
+                    //this.shift(new Vector2(-0.5, 0.0));
+                }
+                if (key == rightUpKey) {
+                    this.applyForce(new Vector2(SPEED_UP, 0.0));
+                    //this.shift(new Vector2(0.5, 0.0));
+                }
             }
-            if (key == rightKey) {
-                this.applyForce(new Vector2(SPEED_UP, 0.0));
-                //this.shift(new Vector2(0.5, 0.0));
+            else if (type == BAR_VERTICAL) {
+                if (key == leftDownKey) {               
+                    this.applyForce(new Vector2(0.0, -SPEED_UP));
+                    //this.shift(new Vector2(-0.5, 0.0));
+                }
+                if (key == rightUpKey) {
+                    this.applyForce(new Vector2(0.0, SPEED_UP));
+                    //this.shift(new Vector2(0.5, 0.0));
+                }
             }
         }
         

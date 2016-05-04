@@ -13,10 +13,16 @@ import org.dyn4j.geometry.Rectangle;
  *
  * @author saeed
  */
-public class HorWall extends GameObject {
-	
-    public HorWall () {
-        Rectangle wall = new Rectangle (20.0, 0.1);
+public class Wall extends GameObject {
+    public static final int WALL_HORIZONTAL = 0;
+    public static final int WALL_VERTICAL = 1;
+    
+    public Wall (int type) {
+        Rectangle wall = null;
+        if (type == WALL_HORIZONTAL)
+            wall = new Rectangle (20.0, 0.1);
+        else if (type == WALL_VERTICAL)
+            wall = new Rectangle (0.1, 20.0);
         this.addFixture(new BodyFixture(wall));
         this.setMass(MassType.INFINITE);
     }
