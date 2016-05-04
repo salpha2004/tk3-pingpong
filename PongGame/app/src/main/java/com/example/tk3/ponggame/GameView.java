@@ -53,22 +53,23 @@ public class GameView extends SurfaceView  implements SurfaceHolder.Callback
                 break;
             case MotionEvent.ACTION_MOVE:
                 pointerIndex = MotionEventCompat.findPointerIndex(e, mActivePointerId);
+                try {
 
-                x = MotionEventCompat.getX(e, pointerIndex);
-                y = MotionEventCompat.getY(e, pointerIndex);
+                    x = MotionEventCompat.getX(e, pointerIndex);
+                    y = MotionEventCompat.getY(e, pointerIndex);
 
-                // Calculate the distance moved
-                dx = x - mLastTouchX;
-                dy = y - mLastTouchY;
+                    // Calculate the distance moved
+                    dx = x - mLastTouchX;
+                    dy = y - mLastTouchY;
 
-                mLastTouchX = x;
-                mLastTouchY = y;
-                if (Mundo.getInstance().getId() < 2) {
-                    return _thread.getGameState().moveBat(dx);
-                } else {
-                    return _thread.getGameState().moveBat(dy);
-                }
-
+                    mLastTouchX = x;
+                    mLastTouchY = y;
+                    if (Mundo.getInstance().getId() < 2) {
+                        return _thread.getGameState().moveBat(dx);
+                    } else {
+                        return _thread.getGameState().moveBat(dy);
+                    }
+                } catch (IllegalArgumentException ex) {}
 
         }
         return true;

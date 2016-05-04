@@ -1,5 +1,6 @@
 package com.example.tk3.ponggame;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.umundo.core.Discovery;
@@ -8,9 +9,11 @@ import org.umundo.core.Message;
 import org.umundo.core.Node;
 import org.umundo.core.Publisher;
 import org.umundo.core.Receiver;
+import org.umundo.core.StringArray;
 import org.umundo.core.Subscriber;
 import org.umundo.core.SubscriberStub;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -19,32 +22,55 @@ import java.util.HashMap;
 public class Mundo {
     private static Mundo _instance;
 
+    private Context context;
+    private String name;
+
     private Discovery disc;
     private Node node;
     private Publisher pub;
     private Subscriber sub;
 
-    private HashMap<String, Integer> participants;
+    //private HashMap<String, String> participants;
+    private ArrayList<String> participants;
+    private ArrayList<String> participantsUUID;
 
     private int id;
 
-    private Mundo() {
-        participants = new HashMap<String, Integer>();
+    private Mundo(Context context, String name) {
+        this.context = context;
+        this.name = name;
+        //participants = new HashMap<String, String>();
+        participants = new ArrayList<>();
+        participantsUUID = new ArrayList<>();
         disc = new Discovery(Discovery.DiscoveryType.MDNS);
         //long i = disc.list().size();
         node = new Node();
         disc.add(node);
         pub = new Publisher("batPos");
-        pub.setGreeter(new Login());
+
         sub = new Subscriber("batPos");
         sub.setReceiver(new LoginReceiver());
         node.addPublisher(pub);
         node.addSubscriber(sub);
-        int n = pub.waitForSubscribers(0);
+        pub.setGreeter(new Login(name));
+        //int n = pub.waitForSubscribers(0);
         id = 0;
-
-        participants.put(sub.getUUID(), id);
+        Log.d("Test", "" + node.getSubscribers().size());
+        //participants.put(sub.getUUID(), name);
+        participants.add(name);
     }
+
+    private Mundo() {
+        this(null, "NoName");
+    }
+
+    public static Mundo getInstance(Context context, String name) {
+        if (_instance == null) {
+            _instance = new Mundo(context, name);
+        }
+        return _instance;
+    }
+
     public static Mundo getInstance() {
         if (_instance == null) {
             _instance = new Mundo();
@@ -76,7 +102,11 @@ public class Mundo {
         this.node = node;
     }
 
-    public HashMap<String, Integer> getParticipants() {
+    /*public HashMap<String, String> getParticipants() {
+        return participants;
+    }*/
+
+    public ArrayList<String> getParticipants() {
         return participants;
     }
 
@@ -85,12 +115,23 @@ public class Mundo {
     }
 
     class Login extends Greeter {
+        private String userName;
+
+        public Login(String name) {
+            userName = name;
+        }
+
         @Override
         public void welcome(Publisher pub, SubscriberStub sub) {
-            participants.put(sub.getUUID(), 0);
+            //participants.put(sub.getUUID(), userName);
+            //participants.add(userName);
+            participantsUUID.add(sub.getUUID());
+            ((GameSetup)context).updateList();
             Message greeting = Message.toSubscriber(sub.getUUID());
-            greeting.putMeta("sender", Mundo.this.sub.getUUID());
-            greeting.putMeta("subscriber", "" + id);
+            //greeting.putMeta("subscriber", Mundo.this.sub.getUUID());
+            greeting.putMeta("name", userName);
+            greeting.putMeta("senderUUID", Mundo.this.sub.getUUID());
+            greeting.putMeta("senderId", "" + id);
             pub.send(greeting);
             Log.d("Blah", sub.getUUID());
         }
@@ -104,13 +145,20 @@ public class Mundo {
 
     public class LoginReceiver extends Receiver {
         public void receive(Message msg) {
-            if (msg.getMeta().containsKey("subscriber") && !participants.containsKey(msg.getMeta("sender"))) {
-                int i = Integer.parseInt(msg.getMeta("subscriber"));
-                if (i >= id) {
-                    id = i + 1;
-                    participants.put(sub.getUUID(), 0);
+            //if (msg.getMeta().containsKey("subscriber") && !participants.containsKey(msg.getMeta("subscriber"))) {
+            if (msg.getMeta().containsKey("name")) {
+                if (!participantsUUID.contains(msg.getMeta("senderUUID"))) {
+                    int i = Integer.parseInt(msg.getMeta("senderId"));
+                    if (i >= id) {
+                        id = i + 1;
+                        //participants.put(sub.getUUID(), this);
+                    }
                 }
-                participants.put(msg.getMeta("sender"), 0);
+                //participants.put(msg.getMeta("subscriber"), msg.getMeta("name"));
+                if (!participants.contains(msg.getMeta("name"))) {
+                    participants.add(msg.getMeta("name"));
+                }
+                ((GameSetup)context).updateList();
             }
         }
     }
