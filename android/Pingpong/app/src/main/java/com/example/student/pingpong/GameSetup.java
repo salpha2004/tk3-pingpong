@@ -60,15 +60,21 @@ public class GameSetup extends AppCompatActivity {
         // show join button only for original game creator
         System.out.println("ORIGINAL CREAOTR");
         System.out.println(channelInstance.getOriginalCreator());
-        /*if(channelInstance.getOriginalCreator() == creator){
 
+        /*if(channelInstance.getOriginalCreator() == creator){
             createGameButton.setVisibility(View.VISIBLE);
             if(strings.length < 2){
                 createGameButton.setEnabled(false);
             }
-
         }*/
+        createGameButton.setVisibility(View.VISIBLE);
+        if(strings.length < 2){
+            createGameButton.setEnabled(false);
+        }
 
+    }
+    
+    private void createGameClickListener(){
 
     }
 }
