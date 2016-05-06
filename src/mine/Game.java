@@ -121,7 +121,8 @@ public class Game extends JFrame implements KeyListener {
         // TODO: readyPlayers are those in the black screen (pressed the button),
         // numPlayers are those in the main screen (before pressing the button)
         int numPlayers, readyPlayers;
-    
+        
+        GameState gameState;
     public class Recv extends Receiver {
         public void receive(Message msg) {
             if (msg.getMeta().containsKey("start")) {
@@ -145,128 +146,113 @@ public class Game extends JFrame implements KeyListener {
             if (msg.getMeta().containsKey("pos")) {
                 //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
                 int id = Integer.parseInt(msg.getMeta("id"));
-                double curPos = Double.parseDouble(msg.getMeta("pos"));
-                switch (id) {
-                    case 0:
-                    case 1:
-                        bat2.translate(1.0, 1.0);
-                        break;
-                    case 2:
-                    case 3:
-                        
-                        break;
-                }
+                float f = Float.parseFloat(msg.getMeta("pos"));
+                gameState.moveOpponentBat(id, f);
             }
             if (msg.getMeta().containsKey("ballX")) {
                 //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
-                double x = Double.parseDouble(msg.getMeta("ballX"));
-                double y = Double.parseDouble(msg.getMeta("ballY"));
+                float x = Float.parseFloat(msg.getMeta("ballX"));
+                float y = Float.parseFloat(msg.getMeta("ballY"));
+                gameState.setBall(x, y);
             }
         }
     }
         
-        private void waitForOthers () {
-            Message msg = new Message();
-            
-            /* game's coordinator has id=0. */
-            if (mundoId == 0) {
-                mundo.getSub().setReceiver(new Recv());
-            }
-            else {
-                mundo.getSub().setReceiver(new Recv());
-                msg.putMeta("ready", "");
-                mundo.getPub().send (msg);
-            }
-            /* special case for boring single-player game. */
-            if (mundoId == 0 && numPlayers == 1)
-                startReceived = 1;
-        }
-        
-	public Game (int numberOfPlayers) {
-            super("TK3 - PingPong");
-            startReceived = 0;
-            // current player (this) is counted and is ready, so init to 1!
-            numPlayers = 1;
-            readyPlayers = 1;
-            // init uMundo
-
-            System.out.println("Enter your name");
-            Scanner dump = new Scanner (System.in);
-            
-            mundo = Mundo.getInstance(dump.nextLine());
-            // wait until IDs are set.
+        public void initMundo () {
+            System.out.println("Enter your name:");
+            Scanner scanner = new Scanner(System.in);
+            String name = scanner.nextLine();
+            mundo = Mundo.getInstance(name);
             try {
                 Thread.sleep (2000);
             }
-            catch (InterruptedException ex) {}
-            
+            catch (InterruptedException ex) {};
+
             mundoId = mundo.getId();
-            pub = mundo.getPub();
-            
             System.out.println("mundo id: " + mundoId);
             
             System.out.println("Press Enter when ready...");
-            dump.nextLine();
-
+            scanner.nextLine();
+            
             numPlayers = mundo.getParticipants().size();
             System.out.println("num players: " + numPlayers);
+            
+            mundo.getSub().setReceiver(new Recv());
+            if (mundoId != 0) {
+                Message msg = new Message();
+                msg.putMeta("ready", "");
+                mundo.getPub().send (msg);
+            }
+            if (mundoId == 0 && numPlayers == 1)
+                startReceived = 1;
+            
+        }
+	public Game () {
+            super("TK3 Ping Pong");
+            readyPlayers = 1;
+            numPlayers = 1;
+            startReceived = 0;
+            initMundo ();
+            gameState = new GameState(Globals.WORLD_WIDTH, Globals.WORLD_HEIGHT,
+                        Globals.SCALE, 2);
+            // setup the JFrame
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.setResizable(true);
+            this.add(gameState);
+            // create the size of the window
+            Dimension size = new Dimension(Globals.WORLD_WIDTH + 100, Globals.WORLD_HEIGHT + 100);
+            this.setSize(size);
+    //        // create a canvas to paint to 
+    //        this.canvas = new Canvas();
+    //        this.canvas.setPreferredSize(size);
+    //        this.canvas.setMinimumSize(size);
+    //        this.canvas.setMaximumSize(size);
+    //
+    //        // add the canvas to the JFrame
+    //        this.add(this.canvas);
 
-            waitForOthers ();
-            // poll for start:
-            // for the coordinator (id=0), start is set when it sends start to others,
-            // for others, it is set when they actually receive start.
+            this.addKeyListener (gameState);
+            this.setFocusable(true);
+
+            // size everything
+            //this.pack();
+
+    //        // make sure we are not stopped
+    //        this.stopped = false;
+
+    //        // setup the world
+    //        this.initializeWorld();
+    //        // must be called after the world is initialized.
+    //        restart();
+            // show it
             while (startReceived == 0) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep (500);
                     System.out.print(".");
                 }
                 catch (InterruptedException ex) {}
             }
-            System.out.println("");
-            // after jumping out of the loop, "start" command has been received.
-            init ();
+            this.setVisible(true);
+            Thread t = new Thread() {
+                @Override
+                public void interrupt() {
+                    super.interrupt();
+                }
+
+                @Override
+                public void run() {
+                    while (true) {
+                        gameState.update();
+                        try {
+                            Thread.sleep(Globals.REFRESH_DELAY);
+                        }
+                        catch (InterruptedException ex) {}
+                    }
+                }
+            };
+            t.start();
 	}
 
-    void init () {
-        // setup the JFrame
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // create the size of the window
-        Dimension size = new Dimension(Globals.WORLD_WIDTH, Globals.WORLD_HEIGHT);
-
-        // create a canvas to paint to 
-        this.canvas = new Canvas();
-        this.canvas.setPreferredSize(size);
-        this.canvas.setMinimumSize(size);
-        this.canvas.setMaximumSize(size);
-
-        // add the canvas to the JFrame
-        this.add(this.canvas);
-
-        // make the JFrame not resizable
-        // (this way I dont have to worry about resize events)
-        this.setResizable(false);
-
-        this.addKeyListener (this);
-        this.setFocusable(true);
-
-        // size everything
-        this.pack();
-
-        // make sure we are not stopped
-        this.stopped = false;
-
-        // setup the world
-        this.initializeWorld();
-        // must be called after the world is initialized.
-        restart();
-        // show it
-        this.setVisible(true);
-		
-        // start it
-        this.start();
-
-    }
         
     void createBat () {
         // create the bat
@@ -633,7 +619,7 @@ public class Game extends JFrame implements KeyListener {
 		}
                 
 		// create the example JFrame
-		Game game = new Game(2);
+		Game game = new Game();
 
 	}
 }
