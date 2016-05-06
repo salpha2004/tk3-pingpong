@@ -200,15 +200,27 @@ public class GameState extends JPanel implements KeyListener {
         _ballVelocityY += (_ballVelocityY < 0) ? -dpToPx(speedup) : dpToPx(speedup);
     }
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) //right
-        {
-            moveBat (_batSpeed);
+        int id = Mundo.getInstance().getId();
+        if (id == 0 || id == 1) {
+            if(e.getKeyCode() == KeyEvent.VK_RIGHT) //right
+            {
+                moveBat (_batSpeed);
+            }
+            if(e.getKeyCode() == KeyEvent.VK_LEFT) //left
+            {
+                moveBat (_batSpeed * -1);
+            }
         }
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) //left
-        {
-            moveBat (_batSpeed * -1);
+        if (id == 2 || id == 3) {
+            if(e.getKeyCode() == KeyEvent.VK_DOWN) //down
+            {
+                moveBat (_batSpeed);
+            }
+            if(e.getKeyCode() == KeyEvent.VK_UP) //up
+            {
+                moveBat (_batSpeed * -1);
+            }
         }
-        
     }
 
     public boolean moveBat(float d) {
@@ -297,6 +309,8 @@ public class GameState extends JPanel implements KeyListener {
         this.setBackground(new Color (20, 20, 20));
         g.setColor(Color.WHITE);
         g.fillRect(_ballX, _ballY, _ballSize ,_ballSize);
+        g.setColor(Color.RED);
+        g.fillRect(_ballX, _ballY, _ballSize/2 ,_ballSize/2);
         switch (_numPlayers) {
             case 4:
                 g.setColor (new Color(200, 200, 0));

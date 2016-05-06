@@ -5,6 +5,8 @@
         <group>
             <file>file:/home/saeed/netbeans-pong/src/mine/Bat.java</file>
             <file>file:/home/saeed/netbeans-pong/src/mine/Game.java</file>
+            <file>file:/home/saeed/netbeans-pong/src/mine/GameState.java</file>
+            <file>file:/home/saeed/netbeans-pong/src/mine/Mundo.java</file>
             <file>file:/home/saeed/netbeans-pong/src/mine/Wall.java</file>
             <file>file:/home/saeed/netbeans-pong/src/mine/Globals.java</file>
         </group>
