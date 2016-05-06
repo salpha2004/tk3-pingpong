@@ -136,11 +136,20 @@ public class Game extends JFrame {
 
     public static void main(String[] args) {
         String arch = System.getProperty("os.arch");
+        String os = System.getProperty("os.name");
         String libPath = "";
-        if ("i386".equals(arch))
-            libPath = System.getProperty("user.dir") + "/libumundoNativeJava.so";
-        else if ("amd64".equals(arch))
-            libPath = System.getProperty("user.dir") + "/libumundoNativeJava64.so";
+        if (os.indexOf("win") >= 0) {
+            if ("i386".equals(arch))
+                libPath = System.getProperty("user.dir") + "\\umundoNativeJava.dll";
+            else if ("amd64".equals(arch))
+                libPath = System.getProperty("user.dir") + "\\umundoNativeJava64.dll";
+        }
+        if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0) {
+            if ("i386".equals(arch))
+                libPath = System.getProperty("user.dir") + "/libumundoNativeJava.so";
+            else if ("amd64".equals(arch))
+                libPath = System.getProperty("user.dir") + "/libumundoNativeJava64.so";
+        }
         System.load(libPath);
         // create the example JFrame
         Game game = new Game();

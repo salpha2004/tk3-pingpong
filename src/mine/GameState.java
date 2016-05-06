@@ -82,6 +82,9 @@ public class GameState extends JPanel implements KeyListener {
     private int dpToPx(float dp) {
         return (int)(dp * _scale);
     }
+    private float dpToPxFloat (float dp) {
+        return dp * _scale;
+    }
     //The update method
     public void update() {
         if (Mundo.getInstance().getId() == 0) {
@@ -323,7 +326,6 @@ public class GameState extends JPanel implements KeyListener {
                 g.setColor (new Color(0, 0, 200));
                 g.fillRect (_bottomBatX, _bottomBatY, _batLength, _batHeight);
         }
-        g.drawRect(0, 0, _screenWidth, _screenHeight);
     }
     
     @Override
