@@ -10,14 +10,14 @@ import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
 
-public class Bar extends GameObject {
+public class Bat extends GameObject {
         final double WIDTH = 2.5;
         final double HEIGHT = 0.3;
         final double SPEED_UP = 300.0;
         final double SLOW_DOWN = 5.0;
 
-        public final static int BAR_HORIZONTAL = 0;
-	public final static int BAR_VERTICAL = 1;
+        public final static int BAT_HORIZONTAL = 0;
+	public final static int BAT_VERTICAL = 1;
         
         Color color;
         Rectangle rect;
@@ -25,14 +25,14 @@ public class Bar extends GameObject {
         int leftDownKey, rightUpKey;
         
         
-        public Bar (int type, Color c, int leftDown, int rightUp) {
+        public Bat (int type, Color c, int leftDown, int rightUp) {
             leftDownKey = leftDown;
             rightUpKey = rightUp;
             color = c;
             this.type = type;
-            if (type == BAR_HORIZONTAL)
+            if (type == BAT_HORIZONTAL)
                 rect = new Rectangle (WIDTH, HEIGHT);
-            else if (type == BAR_VERTICAL)
+            else if (type == BAT_VERTICAL)
                 rect = new Rectangle (HEIGHT, WIDTH);
             this.addFixture(new BodyFixture(rect));
             // allow linear velocity to change the position via arrow keys.
@@ -43,7 +43,7 @@ public class Bar extends GameObject {
         }
         
         public void keyPressed (int key) {
-            if (type == BAR_HORIZONTAL) {
+            if (type == BAT_HORIZONTAL) {
                 if (key == leftDownKey) {               
                     this.applyForce(new Vector2(-SPEED_UP, 0.0));
                     //this.shift(new Vector2(-0.5, 0.0));
@@ -53,7 +53,7 @@ public class Bar extends GameObject {
                     //this.shift(new Vector2(0.5, 0.0));
                 }
             }
-            else if (type == BAR_VERTICAL) {
+            else if (type == BAT_VERTICAL) {
                 if (key == leftDownKey) {               
                     this.applyForce(new Vector2(0.0, -SPEED_UP));
                     //this.shift(new Vector2(-0.5, 0.0));

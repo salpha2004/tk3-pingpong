@@ -51,7 +51,7 @@ public class Ball extends GameObject {
                 // get the shape on the fixture
                 Convex convex = fixture.getShape();
                 Graphics2DRenderer.render(g, convex,
-                        Globals.SCALE, Color.RED);
+                        Globals.SCALE, Color.CYAN);
         }
 
         // set the original transform
