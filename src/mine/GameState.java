@@ -309,8 +309,6 @@ public class GameState extends JPanel implements KeyListener {
         this.setBackground(new Color (20, 20, 20));
         g.setColor(Color.WHITE);
         g.fillRect(_ballX, _ballY, _ballSize ,_ballSize);
-        g.setColor(Color.RED);
-        g.fillRect(_ballX, _ballY, _ballSize/2 ,_ballSize/2);
         switch (_numPlayers) {
             case 4:
                 g.setColor (new Color(200, 200, 0));
