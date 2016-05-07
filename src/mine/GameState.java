@@ -79,7 +79,7 @@ public class GameState extends JPanel implements KeyListener {
         this.pub = Mundo.getInstance().getPub();
     }
 
-    private int dpToPx(float dp) {
+    private int dpToPx(double dp) {
         return (int)(dp * _scale);
     }
     private float dpToPxFloat (float dp) {
@@ -91,8 +91,8 @@ public class GameState extends JPanel implements KeyListener {
             _ballX += _ballVelocityX;
             _ballY += _ballVelocityY;
             Message m = new Message();
-            m.putMeta("ballX", "" + (float) _ballX / _screenWidth);
-            m.putMeta("ballY", "" + (float) _ballY / _screenHeight);
+            m.putMeta("ballX", "" + (double) _ballX / _screenWidth);
+            m.putMeta("ballY", "" + (double) _ballY / _screenHeight);
             pub.send(m);
         }
         switch (_numPlayers) {

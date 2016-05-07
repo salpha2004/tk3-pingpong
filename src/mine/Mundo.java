@@ -29,6 +29,8 @@ public class Mundo {
     //private HashMap<String, String> participants;
     private ArrayList<String> participants;
     private ArrayList<String> participantsUUID;
+    
+    private static Game game;
 
     private int id;
 
@@ -58,6 +60,14 @@ public class Mundo {
         this("NoName");
     }
 
+    public static Mundo getInstance(String name, Game g) {
+        game = g;
+        if (_instance == null) {
+            _instance = new Mundo(name);
+        }
+        return _instance;
+    }
+    
     public static Mundo getInstance(String name) {
         if (_instance == null) {
             _instance = new Mundo(name);
@@ -150,6 +160,9 @@ public class Mundo {
                 //participants.put(msg.getMeta("subscriber"), msg.getMeta("name"));
                 if (!participants.contains(msg.getMeta("name"))) {
                     participants.add(msg.getMeta("name"));
+                }
+                if (game != null) {
+                    game.updatePlayerList (msg.getMeta("name"));
                 }
             }
         }
