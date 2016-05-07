@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import org.umundo.core.Message;
@@ -24,10 +25,11 @@ public class GameState {
     final int _ballSize;
     final int _batSpeed = 3;
 
-    int _ballX;
-    int _ballY;
-    int _ballVelocityX;
-    int _ballVelocityY;
+    float _ballX;
+    float _ballY;
+    float _ballSpeed = 0;
+    double _ballVelocityX;
+    double _ballVelocityY;
 
     //The bats
     final int _batLength;
@@ -47,13 +49,10 @@ public class GameState {
         _numPlayers = numPlayers;
 
         _ballSize = dpToPx(12.5f);
-        _ballX = (_screenWidth/2) - (_ballSize/2);
-        _ballY = (_screenHeight/2) - (_ballSize/2);
-        _ballVelocityX = dpToPx(1);
-        _ballVelocityY = dpToPx(1);
+        respawnBall();
 
         _batLength = dpToPx(100);
-        _batHeight = dpToPx(3);
+        _batHeight = dpToPx(10);
 
         _topBatX = (_screenWidth/2) - (_batLength / 2);
         _topBatY = 0;
@@ -70,14 +69,14 @@ public class GameState {
         this.pub = Mundo.getInstance().getPub();
     }
 
-    private int dpToPx(float dp) {
+    private int dpToPx(double dp) {
         return (int)(dp * _scale);
     }
     //The update method
     public void update() {
         if (Mundo.getInstance().getId() == 0) {
-            _ballX += _ballVelocityX;
-            _ballY += _ballVelocityY;
+            _ballX += _ballVelocityX*_ballSpeed;
+            _ballY += _ballVelocityY*_ballSpeed;
             Message m = new Message();
             m.putMeta("ballX", "" + (float) _ballX / _screenWidth);
             m.putMeta("ballY", "" + (float) _ballY / _screenHeight);
@@ -166,29 +165,49 @@ public class GameState {
         return  (_ballY < 0);
     }
     private boolean collisionTopBat() {
-        return (_ballX > _topBatX && _ballX < _topBatX + _batLength && _ballY < _topBatY);
+        return (_ballX > _topBatX && _ballX < _topBatX + _batLength && _ballY < _topBatY+_batHeight);
     }
     private boolean collisionBottomBat() {
         return (_ballX > _bottomBatX && _ballX < _bottomBatX + _batLength && _ballY + _ballSize > _bottomBatY);
     }
     private boolean collisionLeftBat() {
-        return (_ballY > _leftBatY && _ballY < _leftBatY + _batLength && _ballX < _leftBatX);
+        return (_ballY > _leftBatY && _ballY < _leftBatY + _batLength && _ballX < _leftBatX+_batHeight);
     }
     private boolean collisionRightBat() {
         return (_ballY > _rightBatY && _ballY < _rightBatY + _batLength && _ballX + _ballSize > _rightBatX);
     }
 
     private void respawnBall() {
-        _ballVelocityX = dpToPx(1);
-        _ballVelocityY = dpToPx(1);
+        double randomAngle;
+        do {
+            randomAngle = Math.random() * 360;
+            //randomAngle = 30;
+        } while (isFlatAngle(randomAngle)); //no too flat angles
+        setBallDirection(randomAngle);
+        _ballSpeed = 1.5f;
         _ballX = (_screenWidth/2) - (_ballSize/2);
         _ballY = (_screenHeight/2) - (_ballSize/2);
     }
 
+    private void setBallDirection(double angle) {
+        double x = Math.cos(angle*Math.PI/180.0);
+        double y = Math.sin(angle*Math.PI/180.0);
+        _ballVelocityX = dpToPx(x/Math.max(Math.abs(x),Math.abs(y)));
+        _ballVelocityY = dpToPx(y/Math.max(Math.abs(x),Math.abs(y)));
+        Log.e("angle", "" + angle);
+        Log.e("vx: ", x + " " + x/Math.max(x,y));
+        Log.e("vy: ", y + " " + y/Math.max(x,y));
+    }
     private void speedupBall() {
-        float speedup = 0.5f;
+        if (_ballSpeed<4)
+            _ballSpeed+=0.5;
+        /*float speedup = 0.5f;
         _ballVelocityX += (_ballVelocityX < 0) ? -dpToPx(speedup) : dpToPx(speedup);
-        _ballVelocityY += (_ballVelocityY < 0) ? -dpToPx(speedup) : dpToPx(speedup);
+        _ballVelocityY += (_ballVelocityY < 0) ? -dpToPx(speedup) : dpToPx(speedup);*/
+    }
+    private boolean isFlatAngle(double angle) {
+        return (angle < 20 || angle > 70 && angle < 110 ||
+                angle > 160 && angle < 200 || angle > 250 && angle < 290);
     }
     public boolean keyPressed(int keyCode, KeyEvent msg)
     {
@@ -265,7 +284,7 @@ public class GameState {
 
 //draw the ball
         paint.setColor(Color.WHITE);
-        canvas.drawRect(new Rect(_ballX,_ballY,_ballX + _ballSize,_ballY + _ballSize),
+        canvas.drawRect(new Rect((int)_ballX,(int)_ballY,(int)_ballX + _ballSize,(int)_ballY + _ballSize),
                 paint);
 
 //draw the bats

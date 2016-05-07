@@ -81,6 +81,9 @@ public class GameView extends SurfaceView  implements SurfaceHolder.Callback
         Message ready = new Message();
         ready.putMeta("ready", "" + m.getId());
         m.getPub().send(ready);
+        if (m.getParticipants().size() == 1) {
+            _thread.start();
+        }
         //_thread.start();
     }
 
@@ -89,6 +92,6 @@ public class GameView extends SurfaceView  implements SurfaceHolder.Callback
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        _thread.stop();
+        //_thread.stop();
     }
 }
