@@ -46,17 +46,12 @@ public class Game extends JFrame {
     
     public class Recv extends Receiver {
         public void receive(Message msg) {
-            System.out.println("_______");
-            for (String temp : msg.getMeta().values())
-                System.out.println(temp);
             if (msg.getMeta().containsKey("start")) {
-                System.out.println("1");
                 // signal game's start.
                 startReceived = 1;
                 System.out.println ("\nstart\n");
             }
             if (mundoId == 0 && msg.getMeta().containsKey("ready")) {
-                System.out.println("2");
                 readyPlayers++;
                 if (readyPlayers == numPlayers) {
                     try {
@@ -70,14 +65,12 @@ public class Game extends JFrame {
                 }
             }
             if (msg.getMeta().containsKey("pos")) {
-                System.out.println("3");
                 //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
                 int id = Integer.parseInt(msg.getMeta("id"));
                 float f = Float.parseFloat(msg.getMeta("pos"));
                 gameState.moveOpponentBat(id, f);
             }
             if (msg.getMeta().containsKey("ballX")) {
-                System.out.println("4");
                 //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
                 float x = Float.parseFloat(msg.getMeta("ballX"));
                 float y = Float.parseFloat(msg.getMeta("ballY"));

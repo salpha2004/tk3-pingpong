@@ -149,7 +149,6 @@ public class Mundo {
         public void receive(Message msg) {
             //if (msg.getMeta().containsKey("subscriber") && !participants.containsKey(msg.getMeta("subscriber"))) {
             if (msg.getMeta().containsKey("name")) {
-                System.out.println("New player joined: " + msg.getMeta("name"));
                 if (!participantsUUID.contains(msg.getMeta("senderUUID"))) {
                     int i = Integer.parseInt(msg.getMeta("senderId"));
                     if (i >= id) {
