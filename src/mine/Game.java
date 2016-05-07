@@ -176,17 +176,18 @@ public class Game extends JFrame {
         loginFrame.setFocusable(true);
         JLabel umundoPong = new JLabel("uMundo Pong");
         umundoPong.setHorizontalAlignment(SwingConstants.CENTER);
-        umundoPong.setFont (new Font("Droid Sans Mono", Font.PLAIN, 24));
+        umundoPong.setFont (new Font("Droid Sans Mono", Font.PLAIN, Globals.BIG_FONT_SIZE));
         umundoPong.setBackground(Color.BLACK);
         umundoPong.setForeground(Color.WHITE);
         loginFrame.add(umundoPong);
         JLabel usernameFieldText = new JLabel("Username:");
-        usernameFieldText.setFont (new Font("Droid Sans Mono", Font.PLAIN, 14));
+        usernameFieldText.setFont (new Font("Droid Sans Mono", Font.PLAIN, Globals.NORMAL_FONT_SIZE));
         usernameFieldText.setBackground(Color.BLACK);
         usernameFieldText.setForeground(Color.WHITE);
         loginFrame.add(usernameFieldText);
         final JTextField username = new JTextField(20);
-        username.setFont (new Font("Droid Sans Mono", Font.PLAIN, 14));
+        username.setFont (new Font("Droid Sans Mono", Font.PLAIN, Globals.NORMAL_FONT_SIZE));
+        username.setMargin(new Insets(1, 15, 1, 15));
         username.setBackground(Color.BLACK);
         username.setForeground(Color.WHITE);
         loginFrame.add(username);
@@ -195,11 +196,11 @@ public class Game extends JFrame {
             playerNames[i] = new JLabel();
             playerNames[i].setHorizontalAlignment(SwingConstants.CENTER);
             playerNames[i].setForeground(Color.WHITE);
-            playerNames[i].setFont (new Font("Droid Sans Mono", Font.PLAIN, 14));
+            playerNames[i].setFont (new Font("Droid Sans Mono", Font.PLAIN, Globals.NORMAL_FONT_SIZE));
             loginFrame.add (playerNames[i]);
         }
         final JButton createUserBtn = new JButton("Create User");
-        createUserBtn.setFont (new Font("Droid Sans Mono", Font.PLAIN, 14));
+        createUserBtn.setFont (new Font("Droid Sans Mono", Font.PLAIN, Globals.NORMAL_FONT_SIZE));
         createUserBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -213,7 +214,7 @@ public class Game extends JFrame {
             }
          });
         final JButton startBtn = new JButton ("Start Game");
-        startBtn.setFont (new Font("Droid Sans Mono", Font.PLAIN, 14));
+        startBtn.setFont (new Font("Droid Sans Mono", Font.PLAIN, Globals.NORMAL_FONT_SIZE));
         startBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -242,7 +243,7 @@ public class Game extends JFrame {
         String arch = System.getProperty("os.arch");
         String os = System.getProperty("os.name");
         String libPath = "";
-        if (os.indexOf("win") >= 0) {
+        if (os.indexOf("win") >= 0 || os.indexOf("Win") >= 0) {
             if ("i386".equals(arch))
                 libPath = System.getProperty("user.dir") + "\\umundoNativeJava.dll";
             else if ("amd64".equals(arch))
