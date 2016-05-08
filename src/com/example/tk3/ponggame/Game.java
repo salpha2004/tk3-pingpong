@@ -1,4 +1,4 @@
-package mine;
+package com.example.tk3.ponggame;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -245,15 +245,15 @@ public class Game extends JFrame {
         String libPath = "";
         if (os.indexOf("win") >= 0 || os.indexOf("Win") >= 0) {
             if ("i386".equals(arch))
-                libPath = System.getProperty("user.dir") + "\\umundoNativeJava.dll";
+                libPath = System.getProperty("user.dir") + "\\..\\lib\\umundoNativeJava.dll";
             else if ("amd64".equals(arch))
-                libPath = System.getProperty("user.dir") + "\\umundoNativeJava64.dll";
+                libPath = System.getProperty("user.dir") + "\\..\\lib\\umundoNativeJava64.dll";
         }
         if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0) {
             if ("i386".equals(arch))
-                libPath = System.getProperty("user.dir") + "/libumundoNativeJava.so";
+                libPath = System.getProperty("user.dir") + "/../lib/libumundoNativeJava.so";
             else if ("amd64".equals(arch))
-                libPath = System.getProperty("user.dir") + "/libumundoNativeJava64.so";
+                libPath = System.getProperty("user.dir") + "/../lib/libumundoNativeJava64.so";
         }
         
         

@@ -1,4 +1,4 @@
-package mine;
+package com.example.tk3.ponggame;
 
 import org.umundo.core.Discovery;
 import org.umundo.core.Greeter;

@@ -1,4 +1,4 @@
-package mine;
+package com.example.tk3.ponggame;
 
 /**
  *
