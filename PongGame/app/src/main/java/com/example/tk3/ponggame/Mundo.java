@@ -30,7 +30,6 @@ public class Mundo {
     private Publisher pub;
     private Subscriber sub;
 
-    //private HashMap<String, String> participants;
     private ArrayList<String> participants;
     private ArrayList<String> participantsUUID;
 
@@ -39,24 +38,22 @@ public class Mundo {
     private Mundo(Context context, String name) {
         this.context = context;
         this.name = name;
-        //participants = new HashMap<String, String>();
+
         participants = new ArrayList<>();
         participantsUUID = new ArrayList<>();
+
         disc = new Discovery(Discovery.DiscoveryType.MDNS);
-        //long i = disc.list().size();
         node = new Node();
         disc.add(node);
         pub = new Publisher("batPos");
-
         sub = new Subscriber("batPos");
         sub.setReceiver(new LoginReceiver());
         node.addPublisher(pub);
         node.addSubscriber(sub);
         pub.setGreeter(new Login(name));
-        //int n = pub.waitForSubscribers(0);
+
         id = 0;
         Log.d("Test", "" + node.getSubscribers().size());
-        //participants.put(sub.getUUID(), name);
         participants.add(name);
     }
 
@@ -102,10 +99,6 @@ public class Mundo {
         this.node = node;
     }
 
-    /*public HashMap<String, String> getParticipants() {
-        return participants;
-    }*/
-
     public ArrayList<String> getParticipants() {
         return participants;
     }
@@ -123,17 +116,14 @@ public class Mundo {
 
         @Override
         public void welcome(Publisher pub, SubscriberStub sub) {
-            //participants.put(sub.getUUID(), userName);
-            //participants.add(userName);
+
             participantsUUID.add(sub.getUUID());
             ((GameSetup)context).updateList();
             Message greeting = Message.toSubscriber(sub.getUUID());
-            //greeting.putMeta("subscriber", Mundo.this.sub.getUUID());
             greeting.putMeta("name", userName);
             greeting.putMeta("senderUUID", Mundo.this.sub.getUUID());
             greeting.putMeta("senderId", "" + id);
             pub.send(greeting);
-            Log.d("Blah", sub.getUUID());
         }
 
         @Override
@@ -145,16 +135,13 @@ public class Mundo {
 
     public class LoginReceiver extends Receiver {
         public void receive(Message msg) {
-            //if (msg.getMeta().containsKey("subscriber") && !participants.containsKey(msg.getMeta("subscriber"))) {
             if (msg.getMeta().containsKey("name")) {
                 if (!participantsUUID.contains(msg.getMeta("senderUUID"))) {
                     int i = Integer.parseInt(msg.getMeta("senderId"));
                     if (i >= id) {
                         id = i + 1;
-                        //participants.put(sub.getUUID(), this);
                     }
                 }
-                //participants.put(msg.getMeta("subscriber"), msg.getMeta("name"));
                 if (!participants.contains(msg.getMeta("name"))) {
                     participants.add(msg.getMeta("name"));
                 }

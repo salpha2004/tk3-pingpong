@@ -43,19 +43,6 @@ public class GameSetup extends AppCompatActivity {
         // assign adapter to listVIew
         listView.setAdapter(adapter);
 
-        // listView item click listener
-
-
-        // show join button only for original game creator
-        //System.out.println("ORIGINAL CREAOTR");
-        //System.out.println(channelInstance.getOriginalCreator());
-
-        /*if(channelInstance.getOriginalCreator() == creator){
-            createGameButton.setVisibility(View.VISIBLE);
-            if(strings.length < 2){
-                createGameButton.setEnabled(false);
-            }
-        }*/
         createGameButton.setVisibility(View.VISIBLE);
         createGameButton.setEnabled(true);
 

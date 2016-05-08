@@ -27,10 +27,6 @@ public class GameActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        /*ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }*/
     }
 }
 
@@ -44,7 +40,6 @@ class GameThread extends Thread {
     private int _readyPlayers = 1;
     public GameThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
         Mundo m = Mundo.getInstance();
-        //batPosPub.setGreeter(new Greeter());
         m.getSub().setReceiver(new StateReceiver());
         int i = m.getNode().getSubscribers().size();
 
@@ -109,19 +104,15 @@ class GameThread extends Thread {
                 }
             }
             if (msg.getMeta().containsKey("pos")) {
-                //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
                 int id = Integer.parseInt(msg.getMeta("id"));
                 float f = Float.parseFloat(msg.getMeta("pos"));
                 _state.moveOpponentBat(id, f);
             }
             if (msg.getMeta().containsKey("ballX")) {
-                //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
                 float x = Float.parseFloat(msg.getMeta("ballX"));
                 float y = Float.parseFloat(msg.getMeta("ballY"));
                 _state.setBall(x, y);
             }
         }
     }
-
-
 }

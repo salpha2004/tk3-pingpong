@@ -45,30 +45,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-/*    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        if (wifi != null) {
-            WifiManager.MulticastLock mcLock = wifi.createMulticastLock("mylock");
-            mcLock.acquire();
-            // mcLock.release();
-        } else {
-            Log.v("android-umundo", "Cannot get WifiManager");
-        }
-        System.loadLibrary("umundoNativeJava_d");
-
-        Mundo.getInstance();
-
-    }
-
-    public void startGame(View v) {
-        Intent intent = new Intent(this, GameActivity.class);
-        startActivity(intent);
-    }
-*/
     private void initWifi(){
         WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if (wifi != null) {

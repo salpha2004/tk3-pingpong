@@ -29,11 +29,6 @@ public class GameView extends SurfaceView  implements SurfaceHolder.Callback
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent msg) {
-        return _thread.getGameState().keyPressed(keyCode, msg);
-    }
-
     float mLastTouchX;
     float mLastTouchY;
     int mActivePointerId;
@@ -84,7 +79,6 @@ public class GameView extends SurfaceView  implements SurfaceHolder.Callback
         if (m.getParticipants().size() == 1) {
             _thread.start();
         }
-        //_thread.start();
     }
 
     @Override

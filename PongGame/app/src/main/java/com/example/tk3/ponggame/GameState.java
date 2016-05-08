@@ -20,10 +20,11 @@ public class GameState {
     final int _screenWidth;
     final int _screenHeight;
     final float _scale;
+
     final int _numPlayers;
+
     //The ball
     final int _ballSize;
-    final int _batSpeed = 3;
 
     float _ballX;
     float _ballY;
@@ -39,8 +40,6 @@ public class GameState {
     int _bottomBatX = 0; int _bottomBatY = 0;
     int _leftBatX = 0; int _leftBatY = 0;
     int _rightBatX = 0; int _rightBatY = 0;
-
-
 
     public GameState(int width, int height, float scale, int numPlayers) {
         _screenWidth = width;
@@ -72,6 +71,7 @@ public class GameState {
     private int dpToPx(double dp) {
         return (int)(dp * _scale);
     }
+
     //The update method
     public void update() {
         if (Mundo.getInstance().getId() == 0) {
@@ -199,29 +199,13 @@ public class GameState {
         Log.e("vy: ", y + " " + y/Math.max(x,y));
     }
     private void speedupBall() {
-        if (_ballSpeed<4)
+        if (_ballSpeed<4)  //limit maximum speed
             _ballSpeed+=0.5;
-        /*float speedup = 0.5f;
-        _ballVelocityX += (_ballVelocityX < 0) ? -dpToPx(speedup) : dpToPx(speedup);
-        _ballVelocityY += (_ballVelocityY < 0) ? -dpToPx(speedup) : dpToPx(speedup);*/
+
     }
     private boolean isFlatAngle(double angle) {
         return (angle < 20 || angle > 70 && angle < 110 ||
                 angle > 160 && angle < 200 || angle > 250 && angle < 290);
-    }
-    public boolean keyPressed(int keyCode, KeyEvent msg)
-    {
-        if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) //left
-        {
-            _topBatX += _batSpeed; _bottomBatX -= _batSpeed;
-        }
-
-        if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) //right
-        {
-            _topBatX -= _batSpeed; _bottomBatX += _batSpeed;
-        }
-
-        return true;
     }
 
     public boolean moveBat(float d) {
@@ -254,8 +238,6 @@ public class GameState {
                 break;
         }
 
-        //byte[] b = java.nio.ByteBuffer.allocate(4).putInt(_bottomBatX).array();
-        //pub.send(b);
         Message m = new Message();
         m.putMeta("id", String.valueOf(id));
         m.putMeta("pos", String.valueOf(newpos));
@@ -276,18 +258,15 @@ public class GameState {
     //the draw method
     public void draw(Canvas canvas, Paint paint) {
 
-//Clear the screen
+        //Clear the screen
         canvas.drawRGB(20, 20, 20);
 
-//set the colour
-        //paint.setARGB(200, 0, 200, 0);
-
-//draw the ball
+        //draw the ball
         paint.setColor(Color.WHITE);
         canvas.drawRect(new Rect((int)_ballX,(int)_ballY,(int)_ballX + _ballSize,(int)_ballY + _ballSize),
                 paint);
 
-//draw the bats
+        //draw the bats
         switch (_numPlayers) {
             case 4:
                 paint.setARGB(200, 200, 200, 0);
