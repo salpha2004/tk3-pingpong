@@ -1,10 +1,5 @@
 package com.example.tk3.ponggame;
 
-//import android.graphics.Canvas;
-//import android.graphics.Color;
-//import android.graphics.Paint;
-//import android.graphics.Rect;
-//import android.view.KeyEvent;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Paint;
@@ -20,6 +15,7 @@ import org.umundo.core.Publisher;
 
 /**
  * Created by Mohit on 26.04.2016.
+ * Modified by Saeed for PC.
  */
 public class GameState extends JPanel implements KeyListener {
 
@@ -80,6 +76,7 @@ public class GameState extends JPanel implements KeyListener {
     private int dpToPx(double dp) {
         return (int)(dp * _scale);
     }
+    
     //The update method
     public void update() {
         if (Mundo.getInstance().getId() == 0) {
@@ -204,11 +201,8 @@ public class GameState extends JPanel implements KeyListener {
         _ballVelocityY = dpToPx(y/Math.max(Math.abs(x),Math.abs(y)));
     }
     private void speedupBall() {
-        if (_ballSpeed<4)
-            _ballSpeed+=0.5;
-        /*float speedup = 0.5f;
-        _ballVelocityX += (_ballVelocityX < 0) ? -dpToPx(speedup) : dpToPx(speedup);
-        _ballVelocityY += (_ballVelocityY < 0) ? -dpToPx(speedup) : dpToPx(speedup);*/
+        if (_ballSpeed < 4)
+            _ballSpeed += 0.5;
     }
     private boolean isFlatAngle(double angle) {
         return (angle < 20 || angle > 70 && angle < 110 ||
@@ -268,8 +262,6 @@ public class GameState extends JPanel implements KeyListener {
                 break;
         }
 
-        //byte[] b = java.nio.ByteBuffer.allocate(4).putInt(_bottomBatX).array();
-        //pub.send(b);
         Message m = new Message();
         m.putMeta("id", String.valueOf(id));
         m.putMeta("pos", String.valueOf(newpos));
@@ -286,40 +278,7 @@ public class GameState extends JPanel implements KeyListener {
         }
 
     }
-    //the draw method
-/*
-    public void draw(Canvas canvas, Paint paint) {
 
-//Clear the screen
-        canvas.setBackground(new Color(20, 20, 20));
-
-//set the colour
-        //paint.setARGB(200, 0, 200, 0);
-
-//draw the ball
-        //paint.setColor(Color.WHITE);
-        
-        canvas.drawRect(new Rectangle(_ballX,_ballY,_ballX + _ballSize,_ballY + _ballSize),
-                paint);
-
-//draw the bats
-        switch (_numPlayers) {
-            case 4:
-                paint.setARGB(200, 200, 200, 0);
-                canvas.drawRect(new Rectangle(_rightBatX, _rightBatY, _rightBatX+_batHeight, _rightBatY+_batLength), paint);
-            case 3:
-                paint.setARGB(200, 0, 200, 0);
-                canvas.drawRect(new Rectangle(_leftBatX, _leftBatY, _leftBatX+_batHeight, _leftBatY+_batLength), paint);
-            case 2:
-                paint.setARGB(200, 200, 0, 0);
-                canvas.drawRect(new Rectangle(_topBatX, _topBatY, _topBatX + _batLength, _topBatY + _batHeight), paint);
-            case 1:
-                paint.setARGB(200, 0, 0, 200);
-                canvas.drawRect(new Rectangle(_bottomBatX, _bottomBatY, _bottomBatX + _batLength, _bottomBatY + _batHeight), paint);
-        }
-
-    }
-*/
     public void draw (Graphics g) {
         this.setBackground(new Color (20, 20, 20));
         g.setColor(Color.WHITE);

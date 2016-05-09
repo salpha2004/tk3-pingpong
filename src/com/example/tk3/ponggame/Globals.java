@@ -2,7 +2,7 @@ package com.example.tk3.ponggame;
 
 /**
  *
- * @author saeed
+ * @author Saeed
  */
 public class Globals {
     public static final int REFRESH_DELAY = 10;

@@ -27,14 +27,16 @@ import org.umundo.core.Message;
 import org.umundo.core.Publisher;
 import org.umundo.core.Receiver;
 
+/**
+ *
+ * @author Saeed
+ */
 public class Game extends JFrame {
     int startReceived;
 
     Mundo mundo;
     int mundoId;
     Publisher pub;
-    // TODO: readyPlayers are those in the black screen (pressed the button),
-    // numPlayers are those in the main screen (before pressing the button)
     int numPlayers, readyPlayers;
     
     JLabel[] playerNames;
@@ -65,13 +67,11 @@ public class Game extends JFrame {
                 }
             }
             if (msg.getMeta().containsKey("pos")) {
-                //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
                 int id = Integer.parseInt(msg.getMeta("id"));
                 float f = Float.parseFloat(msg.getMeta("pos"));
                 gameState.moveOpponentBat(id, f);
             }
             if (msg.getMeta().containsKey("ballX")) {
-                //int i = java.nio.ByteBuffer.wrap(msg.getData()).getInt();
                 float x = Float.parseFloat(msg.getMeta("ballX"));
                 float y = Float.parseFloat(msg.getMeta("ballY"));
                 gameState.setBall(x, y);
@@ -89,11 +89,11 @@ public class Game extends JFrame {
 
         gameState = new GameState(Globals.WORLD_WIDTH, Globals.WORLD_HEIGHT,
                     Globals.SCALE, numPlayers);
-        // setup the JFrame
+        // setup the main JFrame
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
         this.add(gameState);
-        // create the size of the window
+        // create the size of the window. it's 100 pxs more than the game board rect size.
         Dimension size = new Dimension(Globals.WORLD_WIDTH + 100, Globals.WORLD_HEIGHT + 100);
         this.setSize(size);
 
@@ -137,15 +137,6 @@ public class Game extends JFrame {
 
         mundoId = mundo.getId();
         System.out.println("mundo id: " + mundoId);
-        
-
-
-
-//        numPlayers = mundo.getParticipants().size();
-//        System.out.println("num players: " + numPlayers);
-//
-//        if (mundoId == 0 && numPlayers == 1)
-//            startReceived = 1;
     }
 
     public Game () {
@@ -162,6 +153,7 @@ public class Game extends JFrame {
         playerIndex++;
     }
     
+    // initialize and display the login form.
     private void initLoginForm() {
         JFrame loginFrame = new JFrame("Login Screen");
         JPanel loginPanel = new JPanel();
@@ -243,6 +235,7 @@ public class Game extends JFrame {
         String arch = System.getProperty("os.arch");
         String os = System.getProperty("os.name");
         String libPath = "";
+        // load proper umundo library based on the underlying os and arch.
         if (os.indexOf("win") >= 0 || os.indexOf("Win") >= 0) {
             if ("i386".equals(arch))
                 libPath = System.getProperty("user.dir") + "\\..\\lib\\umundoNativeJava.dll";
@@ -255,14 +248,9 @@ public class Game extends JFrame {
             else if ("amd64".equals(arch))
                 libPath = System.getProperty("user.dir") + "/../lib/libumundoNativeJava64.so";
         }
-        
-        
-        // get player names
-        
-        
         System.load(libPath);
-        Game game = new Game();
 
+        Game game = new Game();
     }
 }
 
