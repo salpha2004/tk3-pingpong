@@ -1,0 +1,56 @@
+<project name="TK3 Pong" default="run" basedir=".">
+
+  <!-- set global properties for this build -->
+  <property name="src.dir" location="src"/>
+  <property name="run.dir" location="run"/>
+  <property name="build.dir" location="build"/>
+  <property name="lib.dir" location="lib" />
+  
+  <description>
+    TK3 - Practical Exercise 1: Pong Game
+  </description>
+  
+  <path id="build.classpath">
+      <fileset dir="${lib.dir}">
+        <include name="**/*.jar" />
+      </fileset>
+  </path>
+  
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="compile" depends="clean">
+    <mkdir dir="${build.dir}/classes"/>
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="build.classpath" includeantruntime="false"/>
+  </target>
+
+  <target name="jar" depends="compile">
+    <!-- Create the distribution directory -->
+    <jar destfile="${run.dir}/tk3-pong.jar">
+      <zipgroupfileset dir="lib" includes="*.jar" />
+      <fileset dir="${build.dir}/"/>
+      <manifest>
+        <attribute name="Main-Class" value="com.example.tk3.ponggame.Game"/>
+      </manifest>
+    </jar>  
+  </target>
+
+  
+  <target name="run" depends="jar">
+    <parallel>
+      <java
+             dir="${run.dir}"
+             jar="${run.dir}/tk3-pong.jar"
+             fork="true"
+             failonerror="true"
+             maxmemory="128m"
+             >
+        <classpath>
+          <pathelement location="tk3-pong.jar"/>
+        </classpath>
+      </java>       
+    </parallel>
+  </target> 
+</project>
